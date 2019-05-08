@@ -91,7 +91,7 @@ links:
   - email:
       name: Email
       show: true
-      href: mailto: sumedh.sankhe@gmail.com
+      href: mailto:sumedh.sankhe@gmail.com
       icon: fas fa-envelope
 
 
