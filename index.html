@@ -1,107 +1,225 @@
----
-permalink: /
----
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>{% if site.title %}{{ site.title }}{% else %}{{ site.name }}{% endif %}</title>
-    <meta name="JekyllTheme" content="Fuse Core by Thomas Jensen" />
-    {% if site.robots.description %}<meta name="Description" content="{{ site.robots.description }}" />{% endif %}
-    {% if site.robots.keywords %}<meta name="Keywords" content="{{ site.robots.keywords }}" />{% endif %}
-    {% if site.robots.crawl %}<meta name="Robots" content="{{ site.robots.crawl }}" />{% endif %}
-    <meta name="HandheldFriendly" content="true" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    {% if site.url %}<link rel="canonical" href="{{ site.url }}">{% endif %}
-    {% include analytics.html %}
+<!DOCTYPE HTML>
+<!--
+	Hyperspace by HTML5 UP
+	html5up.net | @ajlkn
+	Free for personal and commercial use under the CCA 3.0 license (html5up.net/license)
+-->
+<html>
+	<head>
+		<title>Sumedh Sankhe</title>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<noscript><link rel="stylesheet" href="assets/css/noscript.css" /></noscript>
+	</head>
+	<body class="is-preload">
 
-    <!-- favicons -->
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ site.baseurl }}/images/favicons/apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ site.baseurl }}/images/favicons/favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="{{ site.baseurl }}/images/favicons/favicon-16x16.png">
-    <link rel="manifest" href="{{ site.baseurl }}/images/favicons/site.webmanifest">
-    <link rel="mask-icon" href="{{ site.baseurl }}/images/favicons/safari-pinned-tab.svg" color="#5bbad5">
-    <link rel="shortcut icon" href="{{ site.baseurl }}/images/favicons/favicon.ico">
-    <meta name="msapplication-TileColor" content="#00a300">
-    <meta name="msapplication-config" content="{{ site.baseurl }}/images/favicons/browserconfig.xml">
-    <meta name="theme-color" content="#ffffff">
+		<!-- Sidebar -->
+			<section id="sidebar">
+				<div class="inner">
+					<nav>
+						<ul>
+							<li><a href="#intro">Welcome</a></li>
+							<li><a href="#one">Experience</a></li>
+							<li><a href="#two">Projects</a></li>
+							<li><a href="#three">Education</a></li>
+						</ul>
+					</nav>
+				</div>
+			</section>
 
-    <!-- Stylesheets -->
-    {% comment %} Bootstrap should be the first stylesheet {% endcomment %}
-    <link rel="stylesheet" type="text/css" crossorigin="anonymous"
-          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
-          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T">
-    <link rel="stylesheet" type="text/css" href="{{ site.baseurl }}/css/theme.css">
-    <link rel="stylesheet" type="text/css" crossorigin="anonymous"
-          href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
-          integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf">
-    <link rel="stylesheet" type="text/css"
-          href="https://fonts.googleapis.com/css?family=Open+Sans:400,700&subset=latin">
-    
-    {% if site.ga and site.ga.cookieconsent %}
-    <!-- Cookie Consent popup to comply with EU cookie law -->
-    <link rel="stylesheet" type="text/css" crossorigin="anonymous"
-          href="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.css"
-          integrity="sha384-AJ82o1PQz2xMlVWjJ+IdPSfyCVS/nJeYbLcpPhm/cEPrewaEdaYkaG6LCsquvogf" />
-    <script async crossorigin="anonymous"
-          src="https://cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.1.0/cookieconsent.min.js"
-          integrity="sha384-l+e8/kt7mRYg7RUc/i3MsNwDJlWxkWkFDX10LF/iNglZLT96GBMAPrbaH2GP2lQy"></script>
-    <script>
-        window.addEventListener("load", function(){
-          window.cookieconsent.initialise({
-            "cookie": { "expiryDays": 730 },
-            "palette": {
-              "popup": { "background": "#383b75" },
-              "button": { "background": "#f1d600" }
-            },
-            "theme": "classic"
-          });
-        });
-    </script>
-    {% endif %}
-</head>
-<body class="fullscreen-background">
+		<!-- Wrapper -->
+			<div id="wrapper">
 
-<div class="glass-pane">
-<div class="container fuse-core-content pb-4">
+				<!-- Intro -->
+					<section id="intro" class="wrapper style1 fullscreen fade-up">
+						<div class="inner">
+							<h1>Sumedh R. Sankhe</h1>
+							<img class = "TextWrap" src="images/profile.jpg" width="400" height = "400" />
+								<p></p>
+							<ul class="actions">
+								<li><a href="#one" class="button scrolly">Learn more</a></li>
+							</ul>
+						</div>
+					</section>
 
-<div class="row pt-sm-4">
-    <div class="col text-center"><img id="avatar" class="my-3 my-sm-4" alt="{{ site.name }}"
-        src="{% if site.avatar %}{% if site.avatar contains '://' %}{{ site.avatar }}{%
-        else %}{{ site.baseurl }}/{{ site.avatar }}{% endif %}{%
-        else %}{{ site.baseurl }}/images/avatar.svg{% endif %}"></div>
-</div>
-<div class="row">
-    <div class="col">
-        <h1 class="text-center font-weight-bold">{{ site.name }}</h1>
-        {% if site.subtitle %}<h3 class="text-center font-weight-light">{{ site.subtitle }}</h3>{% endif %}
-    </div>
-</div>
+				<!-- One -->
+					<section id="one" class="wrapper style2 spotlights">
+						<!-- Research Assistant at CCIS-->
+						<section>
+							<a href="https://www.khoury.northeastern.edu/" target="_blank" class="image"><img src="images/ccis.jpg" alt="" data-position="center center" /></a>
+							<div class="content">
+								<div class="inner">
+									<h2>Research Assistant</h2>
+									<p> </p>
+									<ul class="actions">
+										<li><a href="ccis.html" class="button">Learn more</a></li>
+									</ul>
+								</div>
+							</div>
+						</section>
+						<!-- EnelX System and analytics-->
+						<section>
+							<a href="https://www.enelx.com/n-a/en" target="_blank" class="image"><img src="images/enelx.png" alt="" data-position="center center" /></a>
+							<div class="content">
+								<div class="inner">
+									<h2>Systems & Analytics Co-op</h2>
+									<p></p>
+									<ul class="actions">
+										<li><a href="enel.html" class="button">Learn more</a></li>
+									</ul>
+								</div>
+							</div>
+						</section>
+						<!-- EnerNOC System and analytics-->
+						<section>
+							<a href="https://www.enelx.com/n-a/en" target="_blank" class="image"><img src="images/enernoc.png" alt="" data-position="top center"/></a>
+							<div class="content">
+								<div class="inner">
+									<h2>Systems & Analytics Intern</h2>
+									<p></p>
+									<ul class="actions">
+										<li><a href="enoc.html" class="button">Learn more</a></li>
+									</ul>
+								</div>
+							</div>
+						</section>
+						<!-- Affect Mental Health-->
+						<section>
+							<a href="https://www.affectmh.org/" target="_blank" class="image"><img src="images/affect.jpg" alt="" data-position="25% 25%" /></a>
+							<div class="content">
+								<div class="inner">
+									<h2>Data Analyst</h2>
+									<p></p>
+									<ul class="actions">
+										<li><a href="affect.html" class="button">Learn more</a></li>
+									</ul>
+								</div>
+							</div>
+						</section>						
+					</section>
 
-<div class="row justify-content-center links pt-1 pt-sm-2">
-{% for hash in site.links %}{% for linkInfo in hash %}{% if linkInfo[1].show %}
-    <div class="col-xs-12 col-sm-2 col-lg-1 px-3 px-sm-0 mt-2 mt-sm-3 text-sm-center"><a
-        href="{{ linkInfo[1].href }}"{% if site.ga %}
-        onclick="trackOutboundLink('{{ linkInfo[1].name }}', '{{ linkInfo[1].href }}'); return false;"
-        {% endif %}><i class="{{ linkInfo[1].icon }} fa-fw"></i>
-        <span class="d-inline d-sm-none">{{ linkInfo[1].name }}</span></a></div>
-{% endif %}{% endfor %}{% endfor %}
-</div>
+				<!-- Two -->
+					<section id="two" class="wrapper style3 fade-up">
+						<div class="inner">
+							<h2>Current Projects</h2>
+							<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
+							<div class="features">
+								<section>
+									<span class="icon solid major fa-code"></span>
+									<h3>MSstats Sample Size</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-lock"></span>
+									<h3>Short Term Load Forecasting</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-cog"></span>
+									<h3>Opinion Generation using Text Summarization methods</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-desktop"></span>
+									<h3>Deep Embedded Clustering</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon solid major fa-link"></span>
+									<h3>Urna quis bibendum</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+								<section>
+									<span class="icon major fa-gem"></span>
+									<h3>Aliquam urna dapibus</h3>
+									<p>Phasellus convallis elit id ullam corper amet et pulvinar. Duis aliquam turpis mauris, sed ultricies erat dapibus.</p>
+								</section>
+							</div>
+							<ul class="actions">
+								<li><a href="generic.html" class="button">Learn more</a></li>
+							</ul>
+						</div>
+					</section>
 
-{% if site.extra_html %}
-<div class="row justify-content-center">
-    <div class="col mt-3 text-sm-center fuse-core-extra">{{ site.extra_html }}</div>
-</div>
-{% endif %}
+				<!-- Three -->
+					<section id="three" class="wrapper style1 fade-up">
+						<div class="inner">
+							<h2>Get in touch</h2>
+							<p>Phasellus convallis elit id ullamcorper pulvinar. Duis aliquam turpis mauris, eu ultricies erat malesuada quis. Aliquam dapibus, lacus eget hendrerit bibendum, urna est aliquam sem, sit amet imperdiet est velit quis lorem.</p>
+							<div class="split style1">
+								<section>
+									<form method="post" action="#">
+										<div class="fields">
+											<div class="field half">
+												<label for="name">Name</label>
+												<input type="text" name="name" id="name" />
+											</div>
+											<div class="field half">
+												<label for="email">Email</label>
+												<input type="text" name="email" id="email" />
+											</div>
+											<div class="field">
+												<label for="message">Message</label>
+												<textarea name="message" id="message" rows="5"></textarea>
+											</div>
+										</div>
+										<ul class="actions">
+											<li><a href="" class="button submit">Send Message</a></li>
+										</ul>
+									</form>
+								</section>
+								<section>
+									<ul class="contact">
+										<li>
+											<h3>Address</h3>
+											<span>12345 Somewhere Road #654<br />
+											Nashville, TN 00000-0000<br />
+											USA</span>
+										</li>
+										<li>
+											<h3>Email</h3>
+											<a href="#">user@untitled.tld</a>
+										</li>
+										<li>
+											<h3>Phone</h3>
+											<span>(000) 000-0000</span>
+										</li>
+										<li>
+											<h3>Social</h3>
+											<ul class="icons">
+												<li><a href="#" class="icon brands fa-twitter"><span class="label">Twitter</span></a></li>
+												<li><a href="#" class="icon brands fa-facebook-f"><span class="label">Facebook</span></a></li>
+												<li><a href="#" class="icon brands fa-github"><span class="label">GitHub</span></a></li>
+												<li><a href="#" class="icon brands fa-instagram"><span class="label">Instagram</span></a></li>
+												<li><a href="#" class="icon brands fa-linkedin-in"><span class="label">LinkedIn</span></a></li>
+											</ul>
+										</li>
+									</ul>
+								</section>
+							</div>
+						</div>
+					</section>
 
-</div>
-</div>
+			</div>
 
-<footer><div class="container"><div class="row">
-    <div class="col text-center">Built on the <a href="https://github.com/tsjensen/fuse-core">Fuse Core</a>
-    Jekyll theme.</div>
-</div></div></footer>
+		<!-- Footer -->
+			<footer id="footer" class="wrapper style1-alt">
+				<div class="inner">
+					<ul class="menu">
+						<li>&copy; Untitled. All rights reserved.</li><li>Design: <a href="http://html5up.net">HTML5 UP</a></li>
+					</ul>
+				</div>
+			</footer>
 
-</body>
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/jquery.scrollex.min.js"></script>
+			<script src="assets/js/jquery.scrolly.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
 </html>
