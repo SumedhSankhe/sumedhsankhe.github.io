@@ -3934,11 +3934,17 @@ input, select, textarea {
 		height: 30%;
 	  }
 /* inline wrap without round */
-	.textWrap{
+	.TextWrap2{
 		float: left;
 		margin:15px;
-		width: 40%;
-		height:30%;
+		width: 47%;
+		height:50%;
+	}
+	.TextWrap3{
+		float: right;
+		margin:15px;
+		width: 47%;
+		height:50%;
 	}
 /* New icon size */
 	.customIcon{
