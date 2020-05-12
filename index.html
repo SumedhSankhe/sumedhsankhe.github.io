@@ -20,8 +20,8 @@
 					<nav>
 						<ul>
 							<li><a href="#intro">Welcome</a></li>
-							<li><a href="#one">Experience</a></li>
-							<li><a href="#two">Projects</a></li>
+							<li><a href="#one">Projects</a></li>
+							<li><a href="#two">Experience</a></li>
 							<li><a href="#three">Contact</a></li>
 						</ul>
 					</nav>
@@ -30,28 +30,102 @@
 
 		<!-- Wrapper -->
 			<div id="wrapper">
-
 				<!-- Intro -->
 					<section id="intro" class="wrapper style1 fullscreen fade-up">
 						<div class="inner">
 							<h1>Sumedh R. Sankhe</h1>
 							<img class = "TextWrap" src="images/profile.jpg" width="400" height = "400" />
-								<p></p>
+								<p>Aspiring Full Stack Data Scientist. Currently based in Boston, developing tools
+									for applications in Computational Biology. 5 years of cumulative experience using the
+									Data Science stack of R, Python, SQL. <br>
+									<i>I enjoy translating business needs to working solutions.</i>
+								</p>
 							<ul class="actions">
 								<li><a href="#one" class="button scrolly">Learn more</a></li>
 							</ul>
 						</div>
 					</section>
+				
+				<!-- Project -->
+				<section id="one" class="wrapper style3 fade-up">
+					<div class="inner">
+						<h1>Projects</h1>
+						<div class="features">
+							<section>
+								<a href="https://ssankhe.shinyapps.io/msstatssamplesize-shiny/" target="_blank">
+									<h2 style="text-align:center">MSstats Sample Size</h2>
+									<img class = 'customImg' src = "images/msstats.png" width = "150" height = "150"/><br>
+									<p style="text-align:justify">MSstatsSampleSize is an open-source R package and 
+										a R-Shiny Web Application, available on Bioconductor. It allows researchers
+										to design optimal MS-based proteomics experiments in terms of statistical power
+										and the use of resources.</p>
+								</a>
+								<a href="https://github.com/SumedhSankhe/MSstatsSampleSize-Shiny" target="_blank"
+									class="icon brands fa-github" style="font-size:24px">
+									<span class="label">GitHub									 
+									</span>
+								</a>
+							</section>
+							<section>
+								<a href="https://github.com/SumedhSankhe/Short-Term-Load-Forecasting-Using-Machine-Learning" target="_blank">
+								<h2 style="text-align:center">Short Term Load Forecasting</h2>
+								<img class="customImg" src="images/stlf3.PNG" width = "150" height = "150"/><br>
+								<!--<img class="columnImg" src="images/stlf2.PNG"/>
+								<img class="textWrap" src="images/stlf3.PNG"/>-->
+								<p>An exploratory attempt to create load forecasting models for electric grids. Using data provided ISO-New England
+									iterations of linear and gaussian mixture models where implemented. Interaction between hours of the day and
+									days of the week provided the most reliable predictions.
+								</p>
+								</a>
+								<a href="https://github.com/SumedhSankhe/Short-Term-Load-Forecasting-Using-Machine-Learning" target="_blank"
+									class="icon brands fa-github" style="font-size:24px">
+									<span class="label">GitHub									 
+									</span>
+								</a>
+								<a href="https://github.com/SumedhSankhe/Short-Term-Load-Forecasting-Using-Machine-Learning" target="_blank"
+									class="icon brands fa-github" style="font-size:24px">
+									<span class="label">GitHub									 
+									</span>
+								</a>
+							</section>
+							<section>
+								<a href="https://github.com/SumedhSankhe/Opinion-Generation-using-Abstractive-Text-Summarization" target="_blank">
+									<h2 style="text-align:center">Opinion Generation using Text Summarization methods</h2>
+									<img class = 'customImg' src = "images/lstm.PNG" /><br>
+									<p style="text-align:justify">An attempt to use sequence-to-sequence bidirectional RNNs
+										to tackle the problem of abstractive text summarization. We also explore an
+										unsupervised way to extract summaries initially which we further use in training our
+										neural model.</p>
+								</a>
+								</section>
+							<section>
+								<a href="https://github.com/SumedhSankhe/JobScrapper-v2" target="_blank">
+									<h2 style="text-align:center">Web Crawling Indeed</h2>
+									<img class="customImg" src="images/python.jpg"/><br>
+									<p style="text-align:justify">A Simple web-scrapper and email reporting system that
+										scrapes data from Indeed given arguements such as Title, Position and Experience Level.
+										The scraped data is cleaned and stored in a MySQL database</p>
+								</a>
+								</section>
+						</div>
+						<ul class="actions">
+							<li><a href="https://github.com/SumedhSankhe" target = "_blank" class="button">Learn more</a></li>
+						</ul>
+					</div>
+				</section>
 
-				<!-- One -->
-					<section id="one" class="wrapper style2 spotlights">
+				<!-- Experience -->
+					<section id="two" class="wrapper style2 spotlights">
 						<!-- Research Assistant at CCIS-->
 						<section>
 							<a href="https://www.khoury.northeastern.edu/" target="_blank" class="image"><img src="images/ccis.jpg" alt="" data-position="center center" /></a>
 							<div class="content">
 								<div class="inner">
 									<h2>Research Assistant</h2>
-									<p> </p>
+									<p>Supporting the research and development of of the MSstats ecosystem as a part of 
+										Vitek-Lab. Developing simple and intuitive web interfaces to help Statistcians and
+										Proteomic Researchers desgin experiments and test hypothesis
+									</p>
 									<ul class="actions">
 										<li><a href="ccis.html" class="button">Learn more</a></li>
 									</ul>
@@ -64,14 +138,17 @@
 							<div class="content">
 								<div class="inner">
 									<h2>Systems & Analytics Co-op</h2>
-									<p></p>
+									<p>Worked with the cross functional Energy Markets team, learning and supporting
+										the various processes which included but not limited to Enrollement, Nomination
+										and Settlement of customers in the various Demand Response programs. Setting up
+									various internal analytics tools for monitoring customer load</p> <!-- TODO FILL WITH MORE DETAILS-->
 									<ul class="actions">
 										<li><a href="enel.html" class="button">Learn more</a></li>
 									</ul>
 								</div>
 							</div>
 						</section>
-						<!-- EnerNOC System and analytics-->
+						<!-- EnerNOC System and analytics
 						<section>
 							<a href="https://www.enelx.com/n-a/en" target="_blank" class="image"><img src="images/enernoc.png" alt="" data-position="top center"/></a>
 							<div class="content">
@@ -83,14 +160,16 @@
 									</ul>
 								</div>
 							</div>
-						</section>
+						</section>-->
 						<!-- Affect Mental Health-->
 						<section>
-							<a href="https://www.affectmh.org/" target="_blank" class="image"><img src="images/affect.jpg" alt="" data-position="25% 25%" /></a>
+							<a href="https://www.affectmh.org/" target="_blank" class="image"><img src="images/affect.png" alt="" data-position="25% 25%" /></a>
 							<div class="content">
 								<div class="inner">
 									<h2>Data Analyst</h2>
-									<p></p>
+									<p>Operationalized various systems for the 1000 Journeys projects, wearing various hats in the very early 
+										days Affect Mental Health. Worked with the interview teams to determine the best data collection strategies
+									</p><!-- TODO FILL WITH MORE DETAILS-->
 									<ul class="actions">
 										<li><a href="affect.html" class="button">Learn more</a></li>
 									</ul>
@@ -99,40 +178,7 @@
 						</section>						
 					</section>
 
-				<!-- Two -->
-					<section id="two" class="wrapper style3 fade-up">
-						<div class="inner">
-							<h2>Projects</h2>
-							<p>Some of current and past projects.</p>
-							<div class="features">
-								<section>
-									<span class="icon solid major fa-code"></span>
-									<a href="https://ssankhe.shinyapps.io/msstatssamplesize-shiny/" taget="_blank"><h3>MSstats Sample Size</h3></a>
-									<p>MSstatsSampleSize is an open-source R package and a R-Shiny Web Application, available on Bioconductor. It allows researchers to design optimal MS-based proteomics experiments in terms of statistical power and the use of resources.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-lock"></span>
-									<a href="https://github.com/SumedhSankhe/Short-Term-Load-Forecasting-Using-Machine-Learning" target="_blank"><h3>Short Term Load Forecasting</h3></a>
-									<p>An exploratory attempt to create load forecasting models for electric grids with variations in loads.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-cog"></span>
-									<a href="https://github.com/SumedhSankhe/Opinion-Generation-using-Abstractive-Text-Summarization" target="_blank"><h3>Opinion Generation using Text Summarization methods</h3></a>
-									<p>An attempt to use sequence-to-sequence bidirectional RNNs to tackle the problem of abstractive text summarization. We also explore an unsupervised way to extract summaries initially which we further use in training our neural model.</p>
-								</section>
-								<section>
-									<span class="icon solid major fa-desktop"></span>
-									<a href="https://github.com/SumedhSankhe/JobScrapper-v2" target="_blank"><h3>Web Crawling Indeed</h3></a>
-									<p>A Simple web-scrapper and email reporting system that scrapes data from Indeed given arguements such as Title, Position and Experience Level. The scraped data is cleaned and stored in a MySQL database</p>
-								</section>
-							</div>
-							<ul class="actions">
-								<li><a href="https://github.com/SumedhSankhe" target = "_blank" class="button">Learn more</a></li>
-							</ul>
-						</div>
-					</section>
-
-				<!-- Three -->
+				<!-- Contact -->
 					<section id="three" class="wrapper style1 fade-up">
 						<div class="inner">
 							<h2>Get in touch</h2>
