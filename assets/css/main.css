@@ -2589,12 +2589,6 @@ input, select, textarea {
 			
 		}
 
-		.image.wrap{
-			float: left;
-			margin : 15px;
-			border-radius: 50%;
-		}
-
 		.image.right {
 			float: right;
 			margin: 0 0 1em 1.5em;
