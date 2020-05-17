@@ -48,7 +48,21 @@
 								(such as a disease). The package fits intensity-based linear model on the input 
 								preliminary data.
 							</p>
-							<span><img class = "TextWrap2" src="images/simulate.PNG" width="50%">
+							<span><img class = "image left" src="images/simulate.PNG" width="50%">
+							<p>It estimates the protein abundance variance from the fitted model and simulates data with
+								certain number of biological replicates based on the variance estimation. It reports the
+								mean predictive accuracy of the classifier and mean protein importance over multiple
+								iterations of the simulation. While varying the number of biological replicates to simulate,
+								the sample size which generates the largest predictive accuracy is estimated. And the
+								proteins which can best separate different conditions are reported.
+							</p>
+							<p>The package also uses the fitted models and the fold changes estimated from the models to 
+								calculate sample size for hypothesis testing. It outputs the minimal number of biological 
+								replicates per condition to acquire the expected FDR and power under different fold changes.
+							</p>
+							</span>
+							<span>
+								<img class="image right" src="images/anadata.PNG">
 							<p>The R-Shiny tool provides a fast and easy interface to exploit the MSstatsSampleSize package
 								conduct data simulation tests and try out multiple simulations parameters for estimating an
 								optimal sample size. The app is completely self contained and hosted on the Shiny-Server
@@ -57,43 +71,25 @@
 								interpretations and use cases
 							</p>
 							</span>
-							<span>
-								<img class="TextWrap3" src="images/anadata.PNG">
-							<p>The package also uses the fitted models and the fold changes estimated from the models to 
-								calculate sample size for hypothesis testing. It outputs the minimal number of biological 
-								replicates per condition to acquire the expected FDR and power under different fold changes.
-							</p>
-							</span>
-							<br>
-							<br>
+							<br><br><br><br><br><br>
+							<h1 class="major">Notable Mention</h1>
+							<h3>GE-Aviation Hackathon</h3>
+							<a href="https://www.khoury.northeastern.edu/general/ge-hackathon-challenge/" target="_blank">
+								<img class="image right"src="images/ge.jpg">
+							</a>
+							<blockquote>
+								<p> The winner of most total impact was called “Blue Team,” designed by data science graduate students 
+									Ramkishan Panthena, Sumedh Sankhe, Tyler Brown and Parivash Hajiyani. The project focused on creating
+									a system that could be utilized by administrators and clients to help alert both parties when licenses
+									expired or changed, thereby helping them avoid government fines or sanctions</p>
+							</blockquote>
+							<a href="https://huntnewsnu.com/46951/campus/hackathon-inspires-creative-solutions-for-aviation-company-operations/?print=true" target="_blank">— The Huntington News</a>
 						</div>
+						<br>
 					</section>
 			</div>
 		
-		<!---Wrapper 2-->
-			<div id="wrapper2">
-				<section id="other" class="wrapper">
-					<div class="inner">
-						<h1 class="major">Notable Mention</h1>
-						<h3>GE-Aviation Hackathon</h3>
-						<a href="https://www.khoury.northeastern.edu/general/ge-hackathon-challenge/" target="_blank">
-							<img class="TextWrap3"src="images/ge.jpg">
-						</a>
-						<blockquote>
-							<p> The winner of most total impact was called “Blue Team,” designed by data science graduate students 
-								Ramkishan Panthena, Sumedh Sankhe, Tyler Brown and Parivash Hajiyani. The project focused on creating
-								a system that could be utilized by administrators and clients to help alert both parties when licenses
-								expired or changed, thereby helping them avoid government fines or sanctions</p>
-						</blockquote>
-						<a href="https://huntnewsnu.com/46951/campus/hackathon-inspires-creative-solutions-for-aviation-company-operations/?print=true"
-								target="_blank">— The Huntington News</a>
-						
-					</div>
-				</section>
-				<br>
-			</div>
-
-		<!-- Footer -->
+			<!-- Footer -->
 			<footer id="footer" class="wrapper alt">
 				<div class="inner">
 					<ul class="menu">
