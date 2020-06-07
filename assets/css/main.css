@@ -2585,8 +2585,14 @@ input, select, textarea {
 			float: left;
 			margin: 0 1.5em 1em 0;
 			top: 0.25em;
-			
 		}
+
+		.image.center {
+			display: block;
+			margin-left: auto;
+			margin-right: auto;
+			width: 50%;
+		  }
 
 		.image.right {
 			float: right;
@@ -3926,13 +3932,7 @@ input, select, textarea {
 		margin-right: 10px;
 		
 	}
-/* img */
-	.customImg {
-		display: block;
-		margin-left: auto;
-		margin-right: auto;
-		width: 40%;
-	  }
+
 /* inline images */
 	.columnImg {
 		display: inline;
