@@ -3945,3 +3945,24 @@ input, select, textarea {
 		width: 24px !important;
 		height: 24px !important;
 	}
+
+/* 2x2 images */
+.column{
+	float: left;
+	width: 50%;
+	padding: 5px;
+	vertical-align: middle;
+}
+
+.row::after{
+	content: "";
+	clear: both;
+	display: table;
+}
+
+.img{
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	margin: auto;
+}
