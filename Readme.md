@@ -195,9 +195,8 @@ python -m http.server 8000
 2. Right-click `index.html`
 3. Select "Open with Live Server"
 
-```
 
-## Testing Checklist
+### Testing Checklist
 
 Before deploying, verify:
 
