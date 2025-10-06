@@ -1,0 +1,29 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="32" height="32" rx="6" fill="#2563eb"/>
+  
+  <!-- Code brackets -->
+  <g stroke="white" stroke-width="2" fill="none" stroke-linecap="round">
+    <!-- Left bracket -->
+    <path d="M 7 9 L 5 9 L 5 23 L 7 23"/>
+    <!-- Right bracket -->
+    <path d="M 25 9 L 27 9 L 27 23 L 25 23"/>
+  </g>
+  
+  <!-- Simplified DNA helix inside brackets -->
+  <g fill="none" stroke="white" stroke-width="1.5" stroke-linecap="round">
+    <!-- Left strand -->
+    <path d="M 12 10 Q 13 13 12 16 Q 11 19 12 22"/>
+    <!-- Right strand -->
+    <path d="M 20 10 Q 19 13 20 16 Q 21 19 20 22"/>
+    <!-- Connecting base pairs -->
+    <line x1="12" y1="12" x2="20" y2="12"/>
+    <line x1="12" y1="16" x2="20" y2="16"/>
+    <line x1="12" y1="20" x2="20" y2="20"/>
+    <!-- Small dots at strand positions for detail -->
+    <circle cx="12" cy="10" r="0.8" fill="white"/>
+    <circle cx="20" cy="10" r="0.8" fill="white"/>
+    <circle cx="12" cy="22" r="0.8" fill="white"/>
+    <circle cx="20" cy="22" r="0.8" fill="white"/>
+  </g>
+</svg>

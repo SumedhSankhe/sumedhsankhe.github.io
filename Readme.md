@@ -252,7 +252,7 @@ Before deploying, verify:
 ## 📧 Support
 
 For questions or issues:
-- **Email**: ssankhe@alamarbio.com
+- **Email**: sumedh.sankhe@gmail.com
 - **LinkedIn**: [linkedin.com/in/sankhe](https://linkedin.com/in/sankhe)
 - **GitHub**: [github.com/SumedhSankhe](https://github.com/SumedhSankhe)
 
