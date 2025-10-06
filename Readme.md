@@ -1,7 +1,5 @@
 # Sumedh R. Sankhe - Portfolio Website
 
-Professional portfolio website showcasing bioinformatics software engineering expertise, built with clean, accessible HTML/CSS/JavaScript.
-
 ## File Structure
 
 ```
