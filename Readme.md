@@ -2,7 +2,7 @@
 
 Professional portfolio website showcasing bioinformatics software engineering expertise, built with clean, accessible HTML/CSS/JavaScript.
 
-## 📁 Complete File Structure
+## File Structure
 
 ```
 your-portfolio/
@@ -16,7 +16,7 @@ your-portfolio/
 └── README.md           # This file
 ```
 
-## ✨ Features
+## Features
 
 - **Professional Design**: Clean, modern aesthetic suitable for technical portfolios
 - **Dark Mode**: Automatic system preference detection with manual toggle
@@ -25,7 +25,7 @@ your-portfolio/
 - **Fast Loading**: Optimized CSS and minimal JavaScript
 - **SEO Optimized**: Proper meta tags and semantic HTML
 
-## 🚀 Quick Deployment to GitHub Pages
+## Quick Deployment to GitHub Pages
 
 ### Method 1: Replace Existing Portfolio (Recommended)
 
@@ -84,7 +84,7 @@ git push origin main
 
 Wait 1-2 minutes, then visit: **https://sumedhsankhe.github.io/**
 
-## 📝 File Contents Summary
+## File Contents Summary
 
 ### HTML Files (5 pages)
 1. **index.html** - Home page with hero section, expertise cards, and stats
@@ -109,7 +109,7 @@ Wait 1-2 minutes, then visit: **https://sumedhsankhe.github.io/**
   - Keyboard accessibility
   - Utility functions
 
-## 🎨 Customization Guide
+## Customization Guide
 
 ### Update Contact Information
 
@@ -157,7 +157,7 @@ In `about.html`, after line 148 (Experience section), add:
 </div>
 ```
 
-## 🌓 Dark Mode Details
+## Dark Mode Details
 
 The portfolio includes sophisticated dark mode support:
 
@@ -166,13 +166,13 @@ The portfolio includes sophisticated dark mode support:
 - **Persistent**: Choice saved in `localStorage`
 - **Smooth Transitions**: All color changes animate smoothly
 
-## 📱 Responsive Breakpoints
+## Responsive Breakpoints
 
 - **Desktop**: 1200px and above (full layout)
 - **Tablet**: 768px - 1199px (adjusted grids)
 - **Mobile**: Below 768px (single column, stacked layout)
 
-## ♿ Accessibility Features
+## Accessibility Features
 
 - Semantic HTML5 structure
 - ARIA labels on interactive elements
@@ -182,7 +182,7 @@ The portfolio includes sophisticated dark mode support:
 - Focus indicators on all interactive elements
 - Alt text placeholders for images
 
-## 🔧 Local Development
+## Local Development
 
 ### Option 1: Python HTTP Server
 ```bash
@@ -195,13 +195,9 @@ python -m http.server 8000
 2. Right-click `index.html`
 3. Select "Open with Live Server"
 
-### Option 3: Node.js http-server
-```bash
-npx http-server -p 8000
-# Visit: http://localhost:8000
 ```
 
-## 🧪 Testing Checklist
+## Testing Checklist
 
 Before deploying, verify:
 
@@ -214,21 +210,21 @@ Before deploying, verify:
 - [ ] Accessibility: Tab through all interactive elements
 - [ ] Test in Chrome, Firefox, and Safari
 
-## 📊 Performance
+## Performance
 
 - **Lighthouse Score**: 95+ (Performance, Accessibility, Best Practices, SEO)
 - **Load Time**: <1 second (on fast connection)
 - **Total Size**: <50KB (HTML + CSS + JS combined)
 - **No External Dependencies**: Self-contained, no CDN requirements
 
-## 🔒 Security
+## Security
 
 - No external scripts or tracking
 - All links use `rel="noopener noreferrer"` for security
 - No cookies or local storage (except theme preference)
 - HTTPS enforced via GitHub Pages
 
-## 🐛 Troubleshooting
+## Troubleshooting
 
 ### Site not updating after push?
 - Wait 2-3 minutes for GitHub Pages to rebuild
@@ -249,28 +245,13 @@ Before deploying, verify:
 - Try in a different browser
 - Check browser console for errors
 
-## 📧 Support
+## Support
 
 For questions or issues:
 - **Email**: sumedh.sankhe@gmail.com
 - **LinkedIn**: [linkedin.com/in/sankhe](https://linkedin.com/in/sankhe)
 - **GitHub**: [github.com/SumedhSankhe](https://github.com/SumedhSankhe)
 
-## 📄 License
+## License
 
 © 2025 Sumedh R. Sankhe. All rights reserved.
-
----
-
-## 🎯 Next Steps
-
-1. ✅ Copy all 8 files to your repository
-2. ✅ Update contact information in `contact.html`
-3. ✅ Review and customize content as needed
-4. ✅ Add publications (optional)
-5. ✅ Add project screenshots (optional)
-6. ✅ Test locally
-7. ✅ Deploy to GitHub Pages
-8. ✅ Share your new portfolio!
-
-**Your professional portfolio is ready to showcase your work!** 🚀
