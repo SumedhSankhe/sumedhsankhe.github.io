@@ -44,15 +44,17 @@
      * Saves preference to localStorage for persistence
      */
     function toggleTheme() {
-        const currentTheme = html.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        // Update DOM and localStorage
-        html.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        
-        // Update icon to reflect new theme
-        updateThemeIcon(newTheme);
+           const currentTheme = html.getAttribute('data-theme');
+           const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+           // Add a class for transition effect
+           html.classList.add('theme-transition');
+           html.setAttribute('data-theme', newTheme);
+           localStorage.setItem('theme', newTheme);
+           updateThemeIcon(newTheme);
+           // Remove transition class after animation
+           setTimeout(() => {
+              html.classList.remove('theme-transition');
+           }, 500);
     }
 
     /**
@@ -155,6 +157,27 @@ function debounce(func, wait) {
         timeout = setTimeout(later, wait);
     };
 }
+
+// ==========================================================================
+// FADE-IN ANIMATION ON SCROLL
+// ==========================================================================
+
+function revealOnScroll() {
+    const fadeEls = document.querySelectorAll('.fade-in');
+    const windowHeight = window.innerHeight;
+    fadeEls.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        if (rect.top < windowHeight - 60) {
+            el.classList.add('visible');
+        } else {
+            el.classList.remove('visible');
+        }
+    });
+}
+
+window.addEventListener('scroll', debounce(revealOnScroll, 20));
+window.addEventListener('resize', debounce(revealOnScroll, 50));
+document.addEventListener('DOMContentLoaded', revealOnScroll);
 
 // ==========================================================================
 // ANALYTICS (Optional - Uncomment if needed)

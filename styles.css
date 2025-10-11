@@ -71,7 +71,7 @@ body {
     line-height: 1.7;
     color: var(--dark);
     background: var(--light);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.5s cubic-bezier(0.23, 1, 0.32, 1), color 0.5s cubic-bezier(0.23, 1, 0.32, 1);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
 }
@@ -89,7 +89,7 @@ nav {
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--gray-200);
     z-index: 1000;
-    transition: all 0.3s ease;
+    transition: background-color 0.5s cubic-bezier(0.23, 1, 0.32, 1), border-color 0.5s cubic-bezier(0.23, 1, 0.32, 1);
 }
 
 /* Dark mode navigation */
@@ -166,9 +166,28 @@ nav {
     position: relative;
 }
 
+}
+
 .nav-links a:hover,
 .nav-links a.active {
     color: var(--primary);
+    text-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
+}
+
+.nav-links a::after {
+    content: '';
+    display: block;
+    width: 0;
+    height: 2px;
+    background: var(--primary);
+    transition: width 0.3s;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+}
+.nav-links a:hover::after,
+.nav-links a.active::after {
+    width: 100%;
 }
 
 /* ==========================================================================
@@ -198,6 +217,7 @@ nav {
     background: var(--primary-dark);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        filter: brightness(1.08);
 }
 
 /* Secondary Button */
@@ -210,6 +230,8 @@ nav {
 .btn-secondary:hover {
     border-color: var(--primary);
     color: var(--primary);
+        background: var(--gray-50);
+        box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
 }
 
 /* ==========================================================================
@@ -344,6 +366,7 @@ nav {
     transform: translateY(-4px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
     border-color: var(--primary);
+        filter: brightness(1.03);
 }
 
 /* Grid Layouts for Cards */
@@ -463,6 +486,7 @@ nav {
     transform: translateY(-4px);
     box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
     border-color: var(--primary);
+        filter: brightness(1.03);
 }
 
 .expertise-card h3 {
@@ -723,6 +747,7 @@ nav {
 .contact-method:hover {
     border-color: var(--primary);
     transform: translateY(-4px);
+        box-shadow: 0 8px 16px rgba(37, 99, 235, 0.10);
 }
 
 .contact-method h3 {
@@ -828,6 +853,46 @@ footer p {
 /* ==========================================================================
    UTILITIES
    ========================================================================== */
+
+/* Project GIFs and Captions */
+.project-gif-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    justify-items: center;
+    align-items: start;
+    margin-bottom: 2rem;
+}
+.project-gif-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.project-gif {
+    max-width: 540px;
+    width: 100%;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(37,99,235,0.10);
+    background: var(--gray-50);
+    margin-bottom: 0.5rem;
+}
+.project-gif-caption {
+    color: var(--gray-600);
+    font-size: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+/* Fade-in animation for scroll */
+.fade-in {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s cubic-bezier(0.23, 1, 0.32, 1), transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.fade-in.visible {
+    opacity: 1;
+    transform: none;
+}
 
 .text-center {
     text-align: center;
