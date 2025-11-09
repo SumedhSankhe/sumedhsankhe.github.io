@@ -180,6 +180,84 @@ window.addEventListener('resize', debounce(revealOnScroll, 50));
 document.addEventListener('DOMContentLoaded', revealOnScroll);
 
 // ==========================================================================
+// PACKAGE LOGOS RANDOMIZER
+// ==========================================================================
+
+/**
+ * Randomly select and display package logos for different skill categories
+ * Shuffles on each page load for variety
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    // Shuffle array using Fisher-Yates algorithm
+    function shuffleArray(array) {
+        const shuffled = [...array];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+        return shuffled;
+    }
+
+    // Helper function to create and append img elements
+    function appendLogos(container, logos, count) {
+        const selectedLogos = shuffleArray(logos).slice(0, count);
+        selectedLogos.forEach(logo => {
+            const img = document.createElement('img');
+            img.src = logo.src;
+            img.alt = logo.alt;
+            img.style.height = '2.2rem';
+            img.style.verticalAlign = 'middle';
+            img.style.margin = '0 0.2rem';
+            img.style.marginLeft = '0.5rem';
+            container.appendChild(img);
+        });
+    }
+
+    // R & Shiny logos
+    const rLogosContainer = document.getElementById('r-logos');
+    if (rLogosContainer) {
+        const rLogos = [
+            { src: 'assets/shiny.svg', alt: 'Shiny' },
+            { src: 'assets/bslib.svg', alt: 'bslib' },
+            { src: 'assets/dbplyr.svg', alt: 'dbplyr' },
+            { src: 'assets/dplyr.svg', alt: 'dplyr' },
+            { src: 'assets/htmltools.svg', alt: 'htmltools' },
+            { src: 'assets/devtools.svg', alt: 'devtools' },
+            { src: 'assets/usethis.svg', alt: 'usethis' },
+            { src: 'assets/promises.svg', alt: 'promises' },
+            { src: 'assets/pipe.svg', alt: 'pipe' },
+            { src: 'assets/sortable.svg', alt: 'sortable' },
+            { src: 'assets/rmarkdown.svg', alt: 'rmarkdown' },
+            { src: 'assets/RStudio.svg', alt: 'RStudio' }
+        ];
+        appendLogos(rLogosContainer, rLogos, 4);
+    }
+
+    // Machine Learning logos
+    const mlLogosContainer = document.getElementById('ml-logos');
+    if (mlLogosContainer) {
+        const mlLogos = [
+            { src: 'assets/tidymodels.svg', alt: 'tidymodels' },
+            { src: 'assets/recipes.svg', alt: 'recipes' },
+            { src: 'assets/modelr.svg', alt: 'modelr' },
+            { src: 'assets/sparklyr.svg', alt: 'sparklyr' }
+        ];
+        appendLogos(mlLogosContainer, mlLogos, 2);
+    }
+
+    // Data Visualization logos
+    const datavizLogosContainer = document.getElementById('dataviz-logos');
+    if (datavizLogosContainer) {
+        const datavizLogos = [
+            { src: 'assets/ggplot2.svg', alt: 'ggplot2' },
+            { src: 'assets/rmarkdown.svg', alt: 'rmarkdown' },
+            { src: 'assets/dplyr.svg', alt: 'dplyr' }
+        ];
+        appendLogos(datavizLogosContainer, datavizLogos, 2);
+    }
+});
+
+// ==========================================================================
 // ANALYTICS (Optional - Uncomment if needed)
 // ==========================================================================
 
