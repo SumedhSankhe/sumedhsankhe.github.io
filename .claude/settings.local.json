@@ -1,7 +1,10 @@
 {
   "permissions": {
     "allow": [
-      "Bash(test:*)"
+      "Bash(test:*)",
+      "Bash(nul)",
+      "Bash(powershell -Command:*)",
+      "Bash(python:*)"
     ],
     "deny": [],
     "ask": []

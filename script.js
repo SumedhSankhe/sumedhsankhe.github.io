@@ -217,18 +217,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const rLogosContainer = document.getElementById('r-logos');
     if (rLogosContainer) {
         const rLogos = [
-            { src: 'assets/shiny.svg', alt: 'Shiny' },
-            { src: 'assets/bslib.svg', alt: 'bslib' },
-            { src: 'assets/dbplyr.svg', alt: 'dbplyr' },
-            { src: 'assets/dplyr.svg', alt: 'dplyr' },
-            { src: 'assets/htmltools.svg', alt: 'htmltools' },
-            { src: 'assets/devtools.svg', alt: 'devtools' },
-            { src: 'assets/usethis.svg', alt: 'usethis' },
-            { src: 'assets/promises.svg', alt: 'promises' },
-            { src: 'assets/pipe.svg', alt: 'pipe' },
-            { src: 'assets/sortable.svg', alt: 'sortable' },
-            { src: 'assets/rmarkdown.svg', alt: 'rmarkdown' },
-            { src: 'assets/RStudio.svg', alt: 'RStudio' }
+            { src: 'assets/svg/shiny.svg', alt: 'Shiny' },
+            { src: 'assets/svg/bslib.svg', alt: 'bslib' },
+            { src: 'assets/svg/dbplyr.svg', alt: 'dbplyr' },
+            { src: 'assets/svg/dplyr.svg', alt: 'dplyr' },
+            { src: 'assets/svg/htmltools.svg', alt: 'htmltools' },
+            { src: 'assets/svg/devtools.svg', alt: 'devtools' },
+            { src: 'assets/svg/usethis.svg', alt: 'usethis' },
+            { src: 'assets/svg/promises.svg', alt: 'promises' },
+            { src: 'assets/svg/pipe.svg', alt: 'pipe' },
+            { src: 'assets/svg/sortable.svg', alt: 'sortable' },
+            { src: 'assets/svg/rmarkdown.svg', alt: 'rmarkdown' },
+            { src: 'assets/svg/RStudio.svg', alt: 'RStudio' }
         ];
         appendLogos(rLogosContainer, rLogos, 4);
     }
@@ -237,10 +237,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const mlLogosContainer = document.getElementById('ml-logos');
     if (mlLogosContainer) {
         const mlLogos = [
-            { src: 'assets/tidymodels.svg', alt: 'tidymodels' },
-            { src: 'assets/recipes.svg', alt: 'recipes' },
-            { src: 'assets/modelr.svg', alt: 'modelr' },
-            { src: 'assets/sparklyr.svg', alt: 'sparklyr' }
+            { src: 'assets/svg/tidymodels.svg', alt: 'tidymodels' },
+            { src: 'assets/svg/recipes.svg', alt: 'recipes' },
+            { src: 'assets/svg/modelr.svg', alt: 'modelr' },
+            { src: 'assets/svg/sparklyr.svg', alt: 'sparklyr' }
         ];
         appendLogos(mlLogosContainer, mlLogos, 2);
     }
@@ -249,12 +249,47 @@ document.addEventListener('DOMContentLoaded', function() {
     const datavizLogosContainer = document.getElementById('dataviz-logos');
     if (datavizLogosContainer) {
         const datavizLogos = [
-            { src: 'assets/ggplot2.svg', alt: 'ggplot2' },
-            { src: 'assets/rmarkdown.svg', alt: 'rmarkdown' },
-            { src: 'assets/dplyr.svg', alt: 'dplyr' }
+            { src: 'assets/svg/ggplot2.svg', alt: 'ggplot2' },
+            { src: 'assets/svg/rmarkdown.svg', alt: 'rmarkdown' },
+            { src: 'assets/svg/dplyr.svg', alt: 'dplyr' }
         ];
         appendLogos(datavizLogosContainer, datavizLogos, 2);
     }
+});
+
+// ==========================================================================
+// PROJECT GIF CLICK TO ENLARGE
+// ==========================================================================
+
+/**
+ * Handle click events on project GIFs to enlarge/shrink them
+ * Clicking a GIF enlarges it, clicking again or clicking another GIF changes selection
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    const gifCells = document.querySelectorAll('.project-gif-cell');
+
+    gifCells.forEach(cell => {
+        cell.addEventListener('click', function() {
+            // Check if this cell is already enlarged
+            const isEnlarged = this.classList.contains('enlarged');
+
+            // Remove enlarged class from all cells
+            gifCells.forEach(c => c.classList.remove('enlarged'));
+
+            // If this cell wasn't enlarged, enlarge it
+            if (!isEnlarged) {
+                this.classList.add('enlarged');
+            }
+        });
+    });
+
+    // Optional: Click outside to close enlarged GIF
+    document.addEventListener('click', function(e) {
+        // Check if click is outside any project-gif-cell
+        if (!e.target.closest('.project-gif-cell')) {
+            gifCells.forEach(c => c.classList.remove('enlarged'));
+        }
+    });
 });
 
 // ==========================================================================
