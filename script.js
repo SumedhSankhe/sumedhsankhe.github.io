@@ -83,6 +83,52 @@
 })();
 
 // ==========================================================================
+// MOBILE MENU TOGGLE
+// ==========================================================================
+
+/**
+ * Initialize mobile menu toggle functionality
+ * Handles opening/closing the mobile navigation menu
+ */
+(function initializeMobileMenu() {
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+    const menuIcon = document.getElementById('menuIcon');
+
+    if (menuToggle && navLinks) {
+        // Toggle menu on button click
+        menuToggle.addEventListener('click', function(e) {
+            e.stopPropagation();
+            navLinks.classList.toggle('active');
+
+            // Update icon
+            if (navLinks.classList.contains('active')) {
+                menuIcon.textContent = '✕';
+            } else {
+                menuIcon.textContent = '☰';
+            }
+        });
+
+        // Close menu when clicking on a link
+        const links = navLinks.querySelectorAll('a');
+        links.forEach(link => {
+            link.addEventListener('click', function() {
+                navLinks.classList.remove('active');
+                menuIcon.textContent = '☰';
+            });
+        });
+
+        // Close menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
+                navLinks.classList.remove('active');
+                menuIcon.textContent = '☰';
+            }
+        });
+    }
+})();
+
+// ==========================================================================
 // SMOOTH SCROLLING FOR ANCHOR LINKS
 // ==========================================================================
 
