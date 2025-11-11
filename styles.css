@@ -1140,3 +1140,45 @@ button:focus {
     color: white;
     padding: 1rem;
 }
+
+/* ==========================================================================
+   BLOG SECTION
+   ========================================================================== */
+
+.blog-container {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 4rem 2rem;
+}
+
+.coming-soon-section {
+    text-align: center;
+    padding: 4rem 2rem;
+    background: var(--light);
+    border-radius: 12px;
+    border: 2px solid var(--gray-200);
+    margin: 2rem auto;
+}
+
+.coming-soon-icon {
+    font-size: 4rem;
+    margin-bottom: 1.5rem;
+    opacity: 0.9;
+}
+
+.coming-soon-section h2 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+}
+
+.coming-soon-section p {
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.coming-soon-section ul {
+    text-align: left;
+}
