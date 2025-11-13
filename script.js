@@ -310,6 +310,7 @@ document.addEventListener('DOMContentLoaded', function() {
 /**
  * Handle click events on project GIFs to enlarge/shrink them
  * Clicking a GIF enlarges it, clicking again or clicking another GIF changes selection
+ * Automatically scrolls enlarged GIF into view for better UX on smaller screens
  */
 document.addEventListener('DOMContentLoaded', function() {
     const gifCells = document.querySelectorAll('.project-gif-cell');
@@ -325,6 +326,16 @@ document.addEventListener('DOMContentLoaded', function() {
             // If this cell wasn't enlarged, enlarge it
             if (!isEnlarged) {
                 this.classList.add('enlarged');
+
+                // Scroll the enlarged GIF into view smoothly
+                // Use setTimeout to allow CSS transition to start first
+                setTimeout(() => {
+                    this.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'center',
+                        inline: 'nearest'
+                    });
+                }, 50);
             }
         });
     });
