@@ -94,10 +94,14 @@
         // Toggle menu on button click
         menuToggle.addEventListener('click', function(e) {
             e.stopPropagation();
+            const isExpanded = navLinks.classList.contains('active');
             navLinks.classList.toggle('active');
 
+            // Update aria-expanded attribute
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+
             // Update icon
-            if (navLinks.classList.contains('active')) {
+            if (!isExpanded) {
                 menuIcon.textContent = '✕';
             } else {
                 menuIcon.textContent = '☰';
@@ -109,6 +113,7 @@
         links.forEach(link => {
             link.addEventListener('click', function() {
                 navLinks.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
                 menuIcon.textContent = '☰';
             });
         });
@@ -117,6 +122,7 @@
         document.addEventListener('click', function(e) {
             if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
                 navLinks.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
                 menuIcon.textContent = '☰';
             }
         });
@@ -219,10 +225,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const img = document.createElement('img');
             img.src = logo.src;
             img.alt = logo.alt;
-            img.style.height = '2.2rem';
-            img.style.verticalAlign = 'middle';
-            img.style.margin = '0 0.2rem';
-            img.style.marginLeft = '0.5rem';
+            img.className = 'skill-logo';
             container.appendChild(img);
         });
     }
@@ -324,6 +327,13 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('click', function(e) {
         // Check if click is outside any project-gif-cell
         if (!e.target.closest('.project-gif-cell')) {
+            closeAllEnlarged();
+        }
+    });
+
+    // Press Escape key to close enlarged GIF
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
             closeAllEnlarged();
         }
     });
