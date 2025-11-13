@@ -11,12 +11,21 @@
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
     <!-- Inline theme script to prevent FOUC (Flash of Unstyled Content) -->
+    <!-- WARNING: Keep synchronized with script.js lines 38-45 -->
+    <!-- Last updated: 2025-01-13 -->
     <script>
         (function() {
-            const savedTheme = localStorage.getItem('theme');
-            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
-            document.documentElement.setAttribute('data-theme', theme);
+            try {
+                const validThemes = ['light', 'dark'];
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = validThemes.includes(savedTheme) ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                // localStorage disabled or error - fallback to system preference or light
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+            }
         })();
     </script>
 </head>

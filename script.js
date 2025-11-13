@@ -6,6 +6,19 @@
 
 // ==========================================================================
 // THEME TOGGLE FUNCTIONALITY
+//
+// WARNING: Theme detection logic is DUPLICATED in inline <script> in all HTML files
+// to prevent FOUC (Flash of Unstyled Content) when navigating between pages.
+//
+// If you modify the theme detection logic below, you MUST update all 6 HTML files:
+//   - index.html (lines 14-21)
+//   - about.html (lines 13-20)
+//   - projects.html (lines 13-20)
+//   - skills.html (lines 13-20)
+//   - blog.html (lines 13-20)
+//   - contact.html (lines 13-20)
+//
+// The inline scripts MUST remain synchronized with this logic to prevent visual flicker.
 // ==========================================================================
 
 /**
@@ -21,9 +34,15 @@
     const html = document.documentElement;
 
     // Determine initial theme: saved preference > system preference > light
+    // NOTE: This logic is duplicated in inline scripts - see warning above
+    const validThemes = ['light', 'dark'];
     const savedTheme = localStorage.getItem('theme');
-    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+    const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Validate saved theme to prevent CSS breakage from corrupted localStorage
+    const initialTheme = validThemes.includes(savedTheme)
+        ? savedTheme
+        : (systemPrefersDark ? 'dark' : 'light');
 
     // Always set data-theme attribute explicitly for consistent state
     html.setAttribute('data-theme', initialTheme);
