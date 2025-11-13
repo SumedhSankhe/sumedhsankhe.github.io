@@ -9,6 +9,24 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Inline theme script to prevent FOUC (Flash of Unstyled Content) -->
+    <!-- WARNING: Keep synchronized with script.js lines 38-45 -->
+    <!-- Last updated: 2025-01-13 -->
+    <script>
+        (function() {
+            try {
+                const validThemes = ['light', 'dark'];
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = validThemes.includes(savedTheme) ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                // localStorage disabled or error - fallback to system preference or light
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Skip to main content for accessibility -->
@@ -23,11 +41,14 @@
                     <span id="themeIcon">◐</span>
                 </button>
             </div>
-            <ul class="nav-links">
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span id="menuIcon">☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="projects.html">Projects</a></li>
-                <li><a href="skills.html" class="active">Skills</a></li>
+                <li><a href="skills.html" class="active" aria-current="page">Skills</a></li>
                 <li><a href="blog.html">Blog</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
@@ -56,8 +77,8 @@
                 <div class="skills-case-card">
                     <div class="skills-case-icon" aria-label="SQL">
                         🗄️
-                        <img src="assets/svg/pgsql.webp" alt="PostgreSQL" style="height: 2.2rem; vertical-align: middle; margin-left: 0.5rem;" />
-                        <img src="assets/svg/sqlite.svg" alt="SQLite" style="height: 2.2rem; vertical-align: middle; margin: 0 0.2rem;" />
+                        <img src="assets/svg/pgsql.webp" alt="PostgreSQL" class="skill-logo" />
+                        <img src="assets/svg/sqlite.svg" alt="SQLite" class="skill-logo" />
                     </div>
                     <div class="skills-case-title">SQL & Data Engineering</div>
                     <div class="skills-case-desc">Designed robust SQL pipelines for NULISAseq data integration, enabling seamless analysis of millions of records with high reliability.</div>
@@ -74,8 +95,8 @@
                 </div>
                 <div class="skills-case-card">
                     <div class="skills-case-icon" aria-label="Git">
-                        <img src="assets/svg/github.svg" alt="GitHub" style="height: 2.2rem; vertical-align: middle; margin: 0 0.2rem;" />
-                        <img src="assets/svg/gitlab.svg" alt="GitLab" style="height: 2.2rem; vertical-align: middle; margin: 0 0.2rem;" />
+                        <img src="assets/svg/github.svg" alt="GitHub" class="skill-logo" />
+                        <img src="assets/svg/gitlab.svg" alt="GitLab" class="skill-logo" />
                     </div>
                     <div class="skills-case-title">Git & DevOps</div>
                     <div class="skills-case-desc">Implemented version control and automated testing (testthat, Cypress) for all major projects, supporting collaborative development and reliability.</div>

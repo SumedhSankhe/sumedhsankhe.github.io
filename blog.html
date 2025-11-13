@@ -9,6 +9,24 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Inline theme script to prevent FOUC (Flash of Unstyled Content) -->
+    <!-- WARNING: Keep synchronized with script.js lines 38-45 -->
+    <!-- Last updated: 2025-01-13 -->
+    <script>
+        (function() {
+            try {
+                const validThemes = ['light', 'dark'];
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = validThemes.includes(savedTheme) ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                // localStorage disabled or error - fallback to system preference or light
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Skip to main content for accessibility -->
@@ -23,12 +41,15 @@
                     <span id="themeIcon">◐</span>
                 </button>
             </div>
-            <ul class="nav-links">
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span id="menuIcon">☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="skills.html">Skills</a></li>
-                <li><a href="blog.html" class="active">Blog</a></li>
+                <li><a href="blog.html" class="active" aria-current="page">Blog</a></li>
                 <li><a href="contact.html">Contact</a></li>
             </ul>
         </div>
@@ -54,7 +75,7 @@
                 <p class="timeline-description">
                     Topics I plan to cover include:
                 </p>
-                <ul class="timeline-highlights" style="max-width: 600px; margin: 2rem auto;">
+                <ul class="timeline-highlights centered">
                     <li>Building production-grade R Shiny applications</li>
                     <li>Docker and Kubernetes for bioinformatics workflows</li>
                     <li>Proteomics data analysis techniques</li>
@@ -63,8 +84,8 @@
                 </ul>
                 <p class="timeline-description">
                     Want to be notified when I publish new articles? Connect with me on
-                    <a href="https://linkedin.com/in/sankhe" target="_blank" rel="noopener noreferrer" style="color: var(--primary); text-decoration: underline;">LinkedIn</a>
-                    or reach out via <a href="contact.html" style="color: var(--primary); text-decoration: underline;">email</a>.
+                    <a href="https://linkedin.com/in/sankhe" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                    or reach out via <a href="contact.html">email</a>.
                 </p>
             </div>
         </div>
