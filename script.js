@@ -309,42 +309,48 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /**
  * Handle click events on project GIFs to enlarge/shrink them
- * Clicking a GIF enlarges it, clicking again or clicking another GIF changes selection
- * Automatically scrolls enlarged GIF into view for better UX on smaller screens
+ * Uses a modal overlay approach - GIF enlarges in center of screen
+ * No scrolling needed - appears as overlay with backdrop
  */
 document.addEventListener('DOMContentLoaded', function() {
     const gifCells = document.querySelectorAll('.project-gif-cell');
 
+    // Create backdrop element
+    const backdrop = document.createElement('div');
+    backdrop.className = 'project-gif-backdrop';
+    document.body.appendChild(backdrop);
+
+    function closeAllEnlarged() {
+        gifCells.forEach(c => c.classList.remove('enlarged'));
+        backdrop.classList.remove('active');
+    }
+
     gifCells.forEach(cell => {
-        cell.addEventListener('click', function() {
+        cell.addEventListener('click', function(e) {
+            e.stopPropagation();
+
             // Check if this cell is already enlarged
             const isEnlarged = this.classList.contains('enlarged');
 
-            // Remove enlarged class from all cells
-            gifCells.forEach(c => c.classList.remove('enlarged'));
+            // Close all enlarged cells first
+            closeAllEnlarged();
 
             // If this cell wasn't enlarged, enlarge it
             if (!isEnlarged) {
                 this.classList.add('enlarged');
-
-                // Scroll the enlarged GIF into view smoothly
-                // Use setTimeout to allow CSS transition to start first
-                setTimeout(() => {
-                    this.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'center',
-                        inline: 'nearest'
-                    });
-                }, 50);
+                backdrop.classList.add('active');
             }
         });
     });
 
-    // Optional: Click outside to close enlarged GIF
+    // Click backdrop to close
+    backdrop.addEventListener('click', closeAllEnlarged);
+
+    // Click outside to close enlarged GIF
     document.addEventListener('click', function(e) {
         // Check if click is outside any project-gif-cell
         if (!e.target.closest('.project-gif-cell')) {
-            gifCells.forEach(c => c.classList.remove('enlarged'));
+            closeAllEnlarged();
         }
     });
 });

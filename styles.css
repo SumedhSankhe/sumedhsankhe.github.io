@@ -1148,21 +1148,27 @@ footer p {
     justify-items: center;
     align-items: start;
     margin-bottom: 2rem;
+    position: relative;
 }
 .project-gif-cell {
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+    position: relative;
 }
 .project-gif-grid:has(.project-gif-cell.enlarged) .project-gif-cell:not(.enlarged) {
     opacity: 0.4;
     filter: blur(2px);
 }
 .project-gif-cell.enlarged {
-    grid-column: 1 / -1;
-    z-index: 100;
-    transform: scale(1.02);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+    max-width: 90vw;
+    max-height: 90vh;
 }
 .project-gif {
     max-width: 540px;
@@ -1171,14 +1177,32 @@ footer p {
     box-shadow: 0 4px 24px rgba(218,165,32,0.10);
     background: var(--gray-50);
     margin-bottom: 0.5rem;
-    transition: max-width 0.3s ease, box-shadow 0.3s ease;
+    transition: max-width 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
     cursor: pointer;
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
 }
 .project-gif-cell.enlarged .project-gif {
-    max-width: 90%;
+    max-width: min(800px, 85vw);
     box-shadow: 0 12px 48px rgba(218,165,32,0.25);
+}
+
+/* Backdrop overlay for enlarged GIF */
+.project-gif-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.project-gif-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* Dark mode: blue shadows */
