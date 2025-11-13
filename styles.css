@@ -1182,6 +1182,16 @@ footer p {
     image-rendering: -webkit-optimize-contrast;
     image-rendering: crisp-edges;
 }
+
+/* Disable pointer cursor on mobile screens where enlarge doesn't make sense */
+@media (max-width: 768px) {
+    .project-gif {
+        cursor: default;
+    }
+    .project-gif-cell {
+        pointer-events: none;
+    }
+}
 .project-gif-cell.enlarged .project-gif {
     max-width: min(800px, 85vw);
     box-shadow: 0 12px 48px rgba(218,165,32,0.25);

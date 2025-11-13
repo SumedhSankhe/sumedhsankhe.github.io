@@ -311,9 +311,15 @@ document.addEventListener('DOMContentLoaded', function() {
  * Handle click events on project GIFs to enlarge/shrink them
  * Uses a modal overlay approach - GIF enlarges in center of screen
  * No scrolling needed - appears as overlay with backdrop
+ * Disabled on mobile screens (<=768px) where enlargement would make GIFs smaller
  */
 document.addEventListener('DOMContentLoaded', function() {
     const gifCells = document.querySelectorAll('.project-gif-cell');
+
+    // Only enable on screens wider than 768px
+    if (window.innerWidth <= 768) {
+        return;
+    }
 
     // Create backdrop element
     const backdrop = document.createElement('div');
