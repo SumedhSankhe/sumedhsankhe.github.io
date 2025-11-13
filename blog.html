@@ -9,6 +9,15 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Inline theme script to prevent FOUC (Flash of Unstyled Content) -->
+    <script>
+        (function() {
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            const theme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body>
     <!-- Skip to main content for accessibility -->
