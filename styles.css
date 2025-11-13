@@ -1188,8 +1188,14 @@ footer p {
     margin-bottom: 0.5rem;
     transition: max-width 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
     cursor: pointer;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+    object-fit: contain;
+}
+
+/* Fallback img inside video tag */
+.project-gif img {
+    width: 100%;
+    height: auto;
+    display: block;
 }
 
 /* Disable pointer cursor on mobile screens where enlarge doesn't make sense */
