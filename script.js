@@ -6,6 +6,19 @@
 
 // ==========================================================================
 // THEME TOGGLE FUNCTIONALITY
+//
+// WARNING: Theme detection logic is DUPLICATED in inline <script> in all HTML files
+// to prevent FOUC (Flash of Unstyled Content) when navigating between pages.
+//
+// If you modify the theme detection logic below, you MUST update all 6 HTML files:
+//   - index.html (lines 14-21)
+//   - about.html (lines 13-20)
+//   - projects.html (lines 13-20)
+//   - skills.html (lines 13-20)
+//   - blog.html (lines 13-20)
+//   - contact.html (lines 13-20)
+//
+// The inline scripts MUST remain synchronized with this logic to prevent visual flicker.
 // ==========================================================================
 
 /**
@@ -20,19 +33,20 @@
     const themeIcon = document.getElementById('themeIcon');
     const html = document.documentElement;
 
-    // Check for saved user preference in localStorage
+    // Determine initial theme: saved preference > system preference > light
+    // NOTE: This logic is duplicated in inline scripts - see warning above
+    const validThemes = ['light', 'dark'];
     const savedTheme = localStorage.getItem('theme');
-    
-    if (savedTheme) {
-        // User has a saved preference - apply it
-        html.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        // No saved preference, but system prefers dark mode
-        // Don't set data-theme attribute, let CSS handle it via media query
-        // Just update the icon to reflect dark mode
-        updateThemeIcon('dark');
-    }
+    const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Validate saved theme to prevent CSS breakage from corrupted localStorage
+    const initialTheme = validThemes.includes(savedTheme)
+        ? savedTheme
+        : (systemPrefersDark ? 'dark' : 'light');
+
+    // Always set data-theme attribute explicitly for consistent state
+    html.setAttribute('data-theme', initialTheme);
+    updateThemeIcon(initialTheme);
 
     // Add click event listener to theme toggle button
     if (themeToggle) {
@@ -44,7 +58,7 @@
      * Saves preference to localStorage for persistence
      */
     function toggleTheme() {
-           const currentTheme = html.getAttribute('data-theme');
+           const currentTheme = html.getAttribute('data-theme') || 'light';
            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
            // Add a class for transition effect
            html.classList.add('theme-transition');
@@ -99,10 +113,14 @@
         // Toggle menu on button click
         menuToggle.addEventListener('click', function(e) {
             e.stopPropagation();
+            const isExpanded = navLinks.classList.contains('active');
             navLinks.classList.toggle('active');
 
+            // Update aria-expanded attribute
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+
             // Update icon
-            if (navLinks.classList.contains('active')) {
+            if (!isExpanded) {
                 menuIcon.textContent = '✕';
             } else {
                 menuIcon.textContent = '☰';
@@ -114,6 +132,7 @@
         links.forEach(link => {
             link.addEventListener('click', function() {
                 navLinks.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
                 menuIcon.textContent = '☰';
             });
         });
@@ -122,6 +141,7 @@
         document.addEventListener('click', function(e) {
             if (!navLinks.contains(e.target) && !menuToggle.contains(e.target)) {
                 navLinks.classList.remove('active');
+                menuToggle.setAttribute('aria-expanded', 'false');
                 menuIcon.textContent = '☰';
             }
         });
@@ -150,33 +170,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     block: 'start'
                 });
             }
-        }
-    });
-});
-
-// ==========================================================================
-// ACCESSIBILITY ENHANCEMENTS
-// ==========================================================================
-
-/**
- * Add keyboard navigation support for interactive elements
- * Ensures all interactive elements are accessible via keyboard
- */
-document.addEventListener('DOMContentLoaded', function() {
-    // Add role="button" to elements that act like buttons but aren't <button> tags
-    const clickableElements = document.querySelectorAll('[onclick]');
-    clickableElements.forEach(element => {
-        if (element.tagName !== 'BUTTON' && element.tagName !== 'A') {
-            element.setAttribute('role', 'button');
-            element.setAttribute('tabindex', '0');
-            
-            // Add keyboard support (Enter and Space keys)
-            element.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.click();
-                }
-            });
         }
     });
 });
@@ -251,10 +244,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const img = document.createElement('img');
             img.src = logo.src;
             img.alt = logo.alt;
-            img.style.height = '2.2rem';
-            img.style.verticalAlign = 'middle';
-            img.style.margin = '0 0.2rem';
-            img.style.marginLeft = '0.5rem';
+            img.className = 'skill-logo';
             container.appendChild(img);
         });
     }
@@ -309,31 +299,61 @@ document.addEventListener('DOMContentLoaded', function() {
 
 /**
  * Handle click events on project GIFs to enlarge/shrink them
- * Clicking a GIF enlarges it, clicking again or clicking another GIF changes selection
+ * Uses a modal overlay approach - GIF enlarges in center of screen
+ * No scrolling needed - appears as overlay with backdrop
+ * Disabled on mobile screens (<=768px) where enlargement would make GIFs smaller
  */
 document.addEventListener('DOMContentLoaded', function() {
     const gifCells = document.querySelectorAll('.project-gif-cell');
 
+    // Only enable on screens wider than 768px
+    if (window.innerWidth <= 768) {
+        return;
+    }
+
+    // Create backdrop element
+    const backdrop = document.createElement('div');
+    backdrop.className = 'project-gif-backdrop';
+    document.body.appendChild(backdrop);
+
+    function closeAllEnlarged() {
+        gifCells.forEach(c => c.classList.remove('enlarged'));
+        backdrop.classList.remove('active');
+    }
+
     gifCells.forEach(cell => {
-        cell.addEventListener('click', function() {
+        cell.addEventListener('click', function(e) {
+            e.stopPropagation();
+
             // Check if this cell is already enlarged
             const isEnlarged = this.classList.contains('enlarged');
 
-            // Remove enlarged class from all cells
-            gifCells.forEach(c => c.classList.remove('enlarged'));
+            // Close all enlarged cells first
+            closeAllEnlarged();
 
             // If this cell wasn't enlarged, enlarge it
             if (!isEnlarged) {
                 this.classList.add('enlarged');
+                backdrop.classList.add('active');
             }
         });
     });
 
-    // Optional: Click outside to close enlarged GIF
+    // Click backdrop to close
+    backdrop.addEventListener('click', closeAllEnlarged);
+
+    // Click outside to close enlarged GIF
     document.addEventListener('click', function(e) {
         // Check if click is outside any project-gif-cell
         if (!e.target.closest('.project-gif-cell')) {
-            gifCells.forEach(c => c.classList.remove('enlarged'));
+            closeAllEnlarged();
+        }
+    });
+
+    // Press Escape key to close enlarged GIF
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllEnlarged();
         }
     });
 });
