@@ -20,19 +20,14 @@
     const themeIcon = document.getElementById('themeIcon');
     const html = document.documentElement;
 
-    // Check for saved user preference in localStorage
+    // Determine initial theme: saved preference > system preference > light
     const savedTheme = localStorage.getItem('theme');
-    
-    if (savedTheme) {
-        // User has a saved preference - apply it
-        html.setAttribute('data-theme', savedTheme);
-        updateThemeIcon(savedTheme);
-    } else if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-        // No saved preference, but system prefers dark mode
-        // Don't set data-theme attribute, let CSS handle it via media query
-        // Just update the icon to reflect dark mode
-        updateThemeIcon('dark');
-    }
+    const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const initialTheme = savedTheme || (systemPrefersDark ? 'dark' : 'light');
+
+    // Always set data-theme attribute explicitly for consistent state
+    html.setAttribute('data-theme', initialTheme);
+    updateThemeIcon(initialTheme);
 
     // Add click event listener to theme toggle button
     if (themeToggle) {
@@ -44,7 +39,7 @@
      * Saves preference to localStorage for persistence
      */
     function toggleTheme() {
-           const currentTheme = html.getAttribute('data-theme');
+           const currentTheme = html.getAttribute('data-theme') || 'light';
            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
            // Add a class for transition effect
            html.classList.add('theme-transition');
@@ -150,33 +145,6 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
                     block: 'start'
                 });
             }
-        }
-    });
-});
-
-// ==========================================================================
-// ACCESSIBILITY ENHANCEMENTS
-// ==========================================================================
-
-/**
- * Add keyboard navigation support for interactive elements
- * Ensures all interactive elements are accessible via keyboard
- */
-document.addEventListener('DOMContentLoaded', function() {
-    // Add role="button" to elements that act like buttons but aren't <button> tags
-    const clickableElements = document.querySelectorAll('[onclick]');
-    clickableElements.forEach(element => {
-        if (element.tagName !== 'BUTTON' && element.tagName !== 'A') {
-            element.setAttribute('role', 'button');
-            element.setAttribute('tabindex', '0');
-            
-            // Add keyboard support (Enter and Space keys)
-            element.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    this.click();
-                }
-            });
         }
     });
 });
