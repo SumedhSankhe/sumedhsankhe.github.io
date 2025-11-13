@@ -152,37 +152,6 @@ Or for server-side rendering:
 - **Vanilla JavaScript**: No frameworks/libraries
 - **Video**: H.264 (MP4) and VP9 (WebM)
 
-## 🧪 Testing Recommendations
-
-### Manual Testing Checklist
-
-- [ ] Theme persists across page navigation
-- [ ] Theme toggle works on all pages
-- [ ] No flicker when switching tabs rapidly
-- [ ] Works in private/incognito mode (localStorage disabled)
-- [ ] Videos play in Safari (MP4 fallback)
-- [ ] Videos play in Chrome (WebM preferred)
-- [ ] Mobile menu toggles correctly
-- [ ] Escape key closes modal
-- [ ] Keyboard navigation works
-
-### Automated Testing (Future)
-
-```javascript
-// Example Cypress test
-describe('Theme System', () => {
-    it('should not flicker when navigating', () => {
-        cy.visit('/');
-        cy.get('#themeToggle').click(); // Set dark mode
-        cy.visit('/about.html');
-        cy.document().then(doc => {
-            expect(doc.documentElement.getAttribute('data-theme'))
-                .to.eq('dark');
-        });
-    });
-});
-```
-
 ## 📝 Maintenance Guide
 
 ### Adding a New Page
