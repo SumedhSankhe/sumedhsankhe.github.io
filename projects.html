@@ -96,25 +96,21 @@
 
                 <h3 class="mt-4">Architecture & Major Modules</h3>
                 <ul class="timeline-highlights">
-                    <li><strong>Project Module:</strong> 3 submodules for comprehensive project management and data initialization</li>
-                    <li><strong>Preview Module:</strong> 6 submodules + 2 nested levels for target, sample, covariate, and QC data inspection</li>
-                    <li><strong>QC Module:</strong> 4 submodules + 3 nested levels for precision analysis, normalization, and detectability assessment</li>
-                    <li><strong>Stats Module:</strong> 3 high-complexity submodules for model selection, summary generation, and visualization</li>
-                    <li><strong>Heatmap Module:</strong> Interactive data exploration capabilities</li>
-                    <li><strong>Additional Modules:</strong> Exit Record management, View Details, and Report Download</li>
+                    <li>55 R modules organized hierarchically: Project Management (6), Quality Control (8), Statistical Analysis (5), Data Visualization (6), Normalization (4), Cloud Infrastructure (4), and supporting utilities</li>
+                    <li>Statistical modeling framework supporting linear models and linear mixed-effects models for differential expression and longitudinal study designs</li>
+                    <li>Multi-dimensional QC system with detectability analysis, precision metrics (intra/inter-plate CV), internal control monitoring, and plate layout validation</li>
+                    <li>Interactive visualization suite featuring customizable heatmaps (iheatmapr), PCA plots, boxplots, and calibration curves for absolute quantification</li>
+                    <li>Cloud-native architecture with Azure AD authentication, Key Vault secrets management, Blob Storage persistence, and PostgreSQL telemetry</li>
                 </ul>
 
                 <h3 class="mt-4">Technical Achievements</h3>
                 <ul class="timeline-highlights">
-                    <li>Orchestrated complex data flows across 20+ interconnected server modules</li>
-                    <li>Implemented nested submodule architecture with up to 3 levels of depth</li>
-                    <li>Managed complete CI/CD pipeline with Kubernetes deployment manifests and automated testing gates</li>
-                    <li>Configured testthat unit tests with renv environment parity for pre-deployment validation</li>
-                    <li>Integrated telemetry system tracking user interactions across all modules</li>
-                    <li>Advanced data cleaning pipeline handling covariates, samples, and quality metrics</li>
-                    <li>Asynchronous processing for computationally intensive statistical analyses</li>
-                    <li>Comprehensive testing framework (testthat + Cypress) ensuring reliability across deployment pipeline</li>
-                    <li>Production deployment on Azure Kubernetes Service with Azure Container Registry</li>
+                    <li>Architected complex reactive state management across 55 interconnected modules with real-time data updates throughout the application</li>
+                    <li>Established automated CI/CD pipelines with comprehensive quality gates (linting, unit tests, E2E automation) for dev and production environments</li>
+                    <li>Developed custom forks of R visualization packages (iheatmapr, PCAtools) to extend capabilities for NULISA-specific analytical requirements</li>
+                    <li>Implemented full-stack testing strategy using shinytest2 for module testing and Cypress for end-to-end UI workflow automation</li>
+                    <li>Built telemetry infrastructure tracking user interactions across all modules for data-driven product improvements</li>
+                    <li>Designed robust data validation and sanitization pipeline for covariate management and data integrity</li>
                 </ul>
             </div>
 
