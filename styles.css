@@ -13,6 +13,17 @@
 .skills-case-icon img:last-child {
     margin-right: 0;
 }
+
+/* Inline skill logo styling */
+.skill-logo {
+    height: 2.2rem;
+    vertical-align: middle;
+    margin: 0 0.2rem;
+}
+
+.skill-logo:first-child {
+    margin-left: 0.5rem;
+}
 .skills-case-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
@@ -144,7 +155,7 @@
     --gray-900: #0f172a;          /* Darkest gray */
 }
 
-/* Dark Mode - Manual Toggle */
+/* Dark Mode - Theme Toggle */
 [data-theme="dark"] {
     /* Blue theme for dark mode */
     --primary: #2563eb;           /* Blue */
@@ -158,24 +169,6 @@
     --gray-200: #475569;          /* Lighter borders */
     --gray-600: #cbd5e1;          /* Light secondary text */
     --gray-700: #e2e8f0;          /* Lighter text */
-}
-
-/* Dark Mode - System Preference */
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) {
-        /* Blue theme for dark mode */
-        --primary: #2563eb;
-        --primary-dark: #1e40af;
-        --accent: #0891b2;
-
-        --light: #0f172a;
-        --dark: #f8fafc;
-        --gray-50: #1e293b;
-        --gray-100: #334155;
-        --gray-200: #475569;
-        --gray-600: #cbd5e1;
-        --gray-700: #e2e8f0;
-    }
 }
 
 /* ==========================================================================
@@ -224,13 +217,6 @@ nav {
 [data-theme="dark"] nav {
     background: rgba(15, 23, 42, 0.8);
     border-bottom: 1px solid var(--gray-100);
-}
-
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) nav {
-        background: rgba(15, 23, 42, 0.8);
-        border-bottom: 1px solid var(--gray-100);
-    }
 }
 
 .nav-container {
@@ -379,6 +365,16 @@ nav {
         box-shadow: 0 2px 8px rgba(37, 99, 235, 0.08);
 }
 
+/* Small Button Variant */
+.btn-small {
+    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+}
+
+.btn-small + .btn-small {
+    margin-left: 0.5rem;
+}
+
 /* ==========================================================================
    PAGE HEADERS
    ========================================================================== */
@@ -448,6 +444,21 @@ nav {
     font-weight: 400;
     margin-bottom: 2rem;
     line-height: 1.5;
+}
+
+.hero-content {
+    display: grid;
+    grid-template-columns: 1fr 200px;
+    gap: 3rem;
+    align-items: center;
+}
+
+.profile-image {
+    border-radius: 50%;
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+    border: 4px solid var(--gray-200);
 }
 
 .cta-buttons {
@@ -604,6 +615,11 @@ nav {
     font-size: 1.2em;
 }
 
+.timeline-highlights.centered {
+    max-width: 600px;
+    margin: 2rem auto;
+}
+
 /* ==========================================================================
    EXPERTISE/SKILLS SECTION
    ========================================================================== */
@@ -657,12 +673,6 @@ nav {
 
 [data-theme="dark"] .stats {
     background: #000000;
-}
-
-@media (prefers-color-scheme: dark) {
-    :root:not([data-theme="light"]) .stats {
-        background: #000000;
-    }
 }
 
 .stats-container {
@@ -999,15 +1009,14 @@ footer p {
     }
 
     .hero-content {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 2rem !important;
-        grid-template-columns: none !important;
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
     }
 
-    .hero-content img {
-        width: 150px !important;
-        height: 150px !important;
+    .hero-content .profile-image {
+        width: 150px;
+        height: 150px;
         margin: 0 auto;
         order: -1;
     }
@@ -1132,7 +1141,7 @@ footer p {
     }
 
     .project-card-content .mt-2 .btn {
-        margin-left: 0 !important;
+        margin-left: 0;
     }
 }
 
@@ -1148,21 +1157,27 @@ footer p {
     justify-items: center;
     align-items: start;
     margin-bottom: 2rem;
+    position: relative;
 }
 .project-gif-cell {
     display: flex;
     flex-direction: column;
     align-items: center;
     transition: opacity 0.3s ease, filter 0.3s ease, transform 0.3s ease;
+    position: relative;
 }
 .project-gif-grid:has(.project-gif-cell.enlarged) .project-gif-cell:not(.enlarged) {
     opacity: 0.4;
     filter: blur(2px);
 }
 .project-gif-cell.enlarged {
-    grid-column: 1 / -1;
-    z-index: 100;
-    transform: scale(1.02);
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1001;
+    max-width: 90vw;
+    max-height: 90vh;
 }
 .project-gif {
     max-width: 540px;
@@ -1171,14 +1186,48 @@ footer p {
     box-shadow: 0 4px 24px rgba(218,165,32,0.10);
     background: var(--gray-50);
     margin-bottom: 0.5rem;
-    transition: max-width 0.3s ease, box-shadow 0.3s ease;
+    transition: max-width 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
     cursor: pointer;
-    image-rendering: -webkit-optimize-contrast;
-    image-rendering: crisp-edges;
+    object-fit: contain;
+}
+
+/* Fallback img inside video tag */
+.project-gif img {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Disable pointer cursor on mobile screens where enlarge doesn't make sense */
+@media (max-width: 768px) {
+    .project-gif {
+        cursor: default;
+    }
+    .project-gif-cell {
+        pointer-events: none;
+    }
 }
 .project-gif-cell.enlarged .project-gif {
-    max-width: 90%;
+    max-width: min(800px, 85vw);
     box-shadow: 0 12px 48px rgba(218,165,32,0.25);
+}
+
+/* Backdrop overlay for enlarged GIF */
+.project-gif-backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+.project-gif-backdrop.active {
+    opacity: 1;
+    pointer-events: auto;
 }
 
 /* Dark mode: blue shadows */

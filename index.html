@@ -10,6 +10,24 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Inline theme script to prevent FOUC (Flash of Unstyled Content) -->
+    <!-- WARNING: Keep synchronized with script.js lines 38-45 -->
+    <!-- Last updated: 2025-01-13 -->
+    <script>
+        (function() {
+            try {
+                const validThemes = ['light', 'dark'];
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = validThemes.includes(savedTheme) ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                // localStorage disabled or error - fallback to system preference or light
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Skip to main content for accessibility -->
@@ -24,11 +42,11 @@
                     <span id="themeIcon">◐</span>
                 </button>
             </div>
-            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Toggle menu">
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
                 <span id="menuIcon">☰</span>
             </button>
             <ul class="nav-links" id="navLinks">
-                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="index.html" class="active" aria-current="page">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="projects.html">Projects</a></li>
                 <li><a href="skills.html">Skills</a></li>
@@ -42,13 +60,13 @@
     <main id="main-content">
         <!-- Hero Section -->
         <section class="hero">
-             <div class="hero-content" style="display: grid; grid-template-columns: 1fr 200px; gap: 3rem; align-items: center;">
+             <div class="hero-content">
                  <div>
                     <span class="hero-label">Bioinformatic Software Engineer</span>
                     <h1>Building sophisticated software for proteomics research</h1>
                     <h2>Lead Developer of NULISA Analysis Software at Alamar Biosciences. Specializing in R Shiny applications, Docker containerization, and scalable data pipelines.</h2>
                 </div>
-                <img src="profile.png" alt="Sumedh R. Sankhe" style="border-radius: 50%; width: 200px; height: 200px; object-fit: cover; border: 4px solid var(--gray-200);">
+                <img src="profile.png" alt="Sumedh R. Sankhe" class="profile-image">
                 <div class="cta-buttons">
                     <a href="projects.html" class="btn btn-primary">View Projects</a>
                     <a href="contact.html" class="btn btn-secondary">Get in Touch</a>
