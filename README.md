@@ -58,6 +58,20 @@ To add a third theme (e.g., 'auto' or 'high-contrast'):
 3. Update toggle button logic in `script.js`
 4. Add new theme icon
 
+### Image Optimization
+
+**Problem**: `profile.png` is 438KB but displayed at 200x200 (3x oversized).
+
+**Solution**:
+```bash
+pip install Pillow
+python3 optimize_images.py
+```
+
+**Results**: Generates optimized sizes (200x, 400x) in PNG and WebP formats with ~95% size reduction.
+
+**Next**: Update `index.html` to use `<picture>` element for responsive image serving.
+
 ## 🌐 Browser Compatibility
 
 | Browser | Version | Support |
@@ -80,6 +94,15 @@ To add a third theme (e.g., 'auto' or 'high-contrast'):
 - **Time to Interactive**: <500ms
 
 ## 🔄 Recent Updates
+
+### 2025-11-20: Analytics, Privacy & SEO
+
+- ✅ Google Analytics 4 with consent-based loading (G-ZB17TTEQRQ)
+- ✅ GDPR-compliant cookie consent banner
+- ✅ Privacy policy page with user rights and data disclosure
+- ✅ Comprehensive SEO metadata (Open Graph, Twitter Cards, JSON-LD)
+- ✅ Image optimization script for profile images
+- ✅ IP anonymization and privacy-first analytics configuration
 
 ### 2025-01-13: Theme System Improvements
 
