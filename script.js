@@ -359,14 +359,13 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ==========================================================================
-// ANALYTICS (Optional - Uncomment if needed)
+// ANALYTICS
 // ==========================================================================
 
 /**
- * Track page views (example for Google Analytics)
- * Uncomment and configure if you want analytics
+ * Google Analytics 4 tracking is implemented in the <head> of all HTML pages
+ * Measurement ID: G-ZB17TTEQRQ
+ *
+ * Custom event tracking can be added here if needed:
+ * Example: gtag('event', 'button_click', { 'event_category': 'engagement' });
  */
-// window.dataLayer = window.dataLayer || [];
-// function gtag(){dataLayer.push(arguments);}
-// gtag('js', new Date());
-// gtag('config', 'YOUR-GA-TRACKING-ID');
