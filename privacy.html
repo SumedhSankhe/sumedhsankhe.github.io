@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Privacy Policy for Sumedh R. Sankhe's portfolio website - Information about data collection and cookie usage">
+    <meta name="author" content="Sumedh R. Sankhe">
+    <title>Privacy Policy | Sumedh R. Sankhe</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://sumedhsankhe.github.io/privacy.html">
+
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow">
+
+    <!-- Google tag (gtag.js) - Consent-based loading -->
+    <script>
+      // Initialize gtag placeholder
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      // Check if user has consented
+      if (localStorage.getItem('cookieConsent') === 'accepted') {
+        // Load GA4 with privacy-friendly settings
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-ZB17TTEQRQ';
+        document.head.appendChild(script);
+
+        gtag('js', new Date());
+        gtag('config', 'G-ZB17TTEQRQ', {
+          'anonymize_ip': true,
+          'allow_google_signals': false,
+          'allow_ad_personalization_signals': false,
+          'cookie_flags': 'SameSite=None;Secure'
+        });
+      }
+    </script>
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Inline theme script to prevent FOUC (Flash of Unstyled Content) -->
+    <!-- WARNING: Keep synchronized with script.js lines 38-45 -->
+    <!-- Last updated: 2025-01-13 -->
+    <script>
+        (function() {
+            try {
+                const validThemes = ['light', 'dark'];
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = validThemes.includes(savedTheme) ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+            } catch (e) {
+                // localStorage disabled or error - fallback to system preference or light
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">Sumedh R. Sankhe</div>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+                    <span id="themeIcon">◐</span>
+                </button>
+            </div>
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span id="menuIcon">☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="skills.html">Skills</a></li>
+                <li><a href="blog.html">Blog</a></li>
+                <li><a href="contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Page Header -->
+        <section class="page-header">
+            <h1>Privacy Policy</h1>
+            <p>Last updated: January 20, 2025</p>
+        </section>
+
+        <!-- Privacy Content -->
+        <div class="about-container">
+
+            <div class="timeline-item">
+                <h2>Introduction</h2>
+                <p class="timeline-description">
+                    This Privacy Policy explains how I collect, use, and protect your information when you visit this portfolio website (sumedhsankhe.github.io). Your privacy is important, and I am committed to transparency about data collection practices.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h2>Information I Collect</h2>
+                <h3 class="mt-3 mb-2">Analytics Data (Optional - Only with Consent)</h3>
+                <p class="timeline-description">
+                    If you consent to cookies, I use Google Analytics 4 to collect anonymous usage data, including:
+                </p>
+                <ul class="timeline-highlights">
+                    <li>Pages visited and time spent on site</li>
+                    <li>Approximate geographic location (country/city level)</li>
+                    <li>Device type, browser, and operating system</li>
+                    <li>Referral source (how you found this site)</li>
+                    <li>Anonymized IP address (full IP is never stored)</li>
+                </ul>
+                <h3 class="mt-3 mb-2">Local Storage</h3>
+                <p class="timeline-description">
+                    This website stores the following preferences locally in your browser:
+                </p>
+                <ul class="timeline-highlights">
+                    <li><strong>Theme preference</strong>: Light or dark mode setting</li>
+                    <li><strong>Cookie consent status</strong>: Your choice to accept or decline analytics cookies</li>
+                </ul>
+                <p class="timeline-description">
+                    This data never leaves your device and is not transmitted to any server.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h2>How I Use Your Information</h2>
+                <p class="timeline-description">
+                    Analytics data is used exclusively to:
+                </p>
+                <ul class="timeline-highlights">
+                    <li>Understand how visitors use the website</li>
+                    <li>Improve content and user experience</li>
+                    <li>Identify popular pages and content</li>
+                </ul>
+                <p class="timeline-description">
+                    <strong>I do not</strong>:
+                </p>
+                <ul class="timeline-highlights">
+                    <li>Sell or share your data with third parties</li>
+                    <li>Use data for advertising or marketing purposes</li>
+                    <li>Track you across other websites</li>
+                    <li>Collect personally identifiable information (PII)</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item">
+                <h2>Privacy-Friendly Settings</h2>
+                <p class="timeline-description">
+                    To protect your privacy, I have configured Google Analytics with the following settings:
+                </p>
+                <ul class="timeline-highlights">
+                    <li><strong>IP Anonymization</strong>: Your full IP address is anonymized before processing</li>
+                    <li><strong>No Advertising Features</strong>: Google Signals and ad personalization are disabled</li>
+                    <li><strong>No Cross-Site Tracking</strong>: Analytics are limited to this domain only</li>
+                    <li><strong>Consent-Based Loading</strong>: Google Analytics only loads if you explicitly accept cookies</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item">
+                <h2>Your Rights and Choices</h2>
+                <h3 class="mt-3 mb-2">Cookie Consent</h3>
+                <p class="timeline-description">
+                    You have full control over whether analytics cookies are used:
+                </p>
+                <ul class="timeline-highlights">
+                    <li><strong>Accept</strong>: Analytics will help improve the website</li>
+                    <li><strong>Decline</strong>: No analytics cookies will be stored, and no data will be collected</li>
+                    <li><strong>Change Your Mind</strong>: Clear your browser's local storage or click the button below to reset your consent</li>
+                </ul>
+                <div class="mt-3">
+                    <button id="resetConsent" class="btn btn-secondary btn-small">Reset Cookie Preferences</button>
+                </div>
+
+                <h3 class="mt-4 mb-2">Browser Settings</h3>
+                <p class="timeline-description">
+                    You can also control cookies through your browser settings:
+                </p>
+                <ul class="timeline-highlights">
+                    <li>Most browsers allow you to block or delete cookies</li>
+                    <li>You can enable "Do Not Track" in your browser preferences</li>
+                    <li>Browser extensions like uBlock Origin or Privacy Badger can block analytics</li>
+                </ul>
+            </div>
+
+            <div class="timeline-item">
+                <h2>Third-Party Services</h2>
+                <h3 class="mt-3 mb-2">Google Analytics</h3>
+                <p class="timeline-description">
+                    This website uses Google Analytics 4, a web analytics service provided by Google LLC. Google Analytics uses cookies to analyze website usage. You can learn more about how Google uses data at <a href="https://policies.google.com/privacy" target="_blank" rel="noopener noreferrer">Google's Privacy Policy</a>.
+                </p>
+
+                <h3 class="mt-3 mb-2">GitHub Pages</h3>
+                <p class="timeline-description">
+                    This website is hosted on GitHub Pages. GitHub may collect technical information for security and performance purposes. See <a href="https://docs.github.com/en/site-policy/privacy-policies/github-privacy-statement" target="_blank" rel="noopener noreferrer">GitHub's Privacy Statement</a> for details.
+                </p>
+
+                <h3 class="mt-3 mb-2">External Links</h3>
+                <p class="timeline-description">
+                    This website contains links to external sites (LinkedIn, GitHub, project demos). I am not responsible for the privacy practices of these third-party websites.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h2>Data Retention</h2>
+                <p class="timeline-description">
+                    Google Analytics data is retained for 14 months, after which it is automatically deleted. You can request deletion of your data at any time by contacting me.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h2>Children's Privacy</h2>
+                <p class="timeline-description">
+                    This website is not directed at children under 13 years of age, and I do not knowingly collect information from children.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h2>Changes to This Privacy Policy</h2>
+                <p class="timeline-description">
+                    I may update this Privacy Policy from time to time. The "Last Updated" date at the top of this page will reflect any changes. Continued use of this website after changes constitutes acceptance of the updated policy.
+                </p>
+            </div>
+
+            <div class="timeline-item">
+                <h2>Contact Me</h2>
+                <p class="timeline-description">
+                    If you have questions or concerns about this Privacy Policy or how your data is handled, please contact me:
+                </p>
+                <ul class="timeline-highlights">
+                    <li>Email: <a href="mailto:sumedh.sankhe@gmail.com">sumedh.sankhe@gmail.com</a></li>
+                    <li>LinkedIn: <a href="https://linkedin.com/in/sankhe" target="_blank" rel="noopener noreferrer">linkedin.com/in/sankhe</a></li>
+                </ul>
+            </div>
+
+            <div class="timeline-item">
+                <h2>GDPR Compliance (European Users)</h2>
+                <p class="timeline-description">
+                    If you are located in the European Economic Area (EEA), you have additional rights under the General Data Protection Regulation (GDPR):
+                </p>
+                <ul class="timeline-highlights">
+                    <li><strong>Right to Access</strong>: Request a copy of data I have about you</li>
+                    <li><strong>Right to Erasure</strong>: Request deletion of your data</li>
+                    <li><strong>Right to Object</strong>: Object to data processing</li>
+                    <li><strong>Right to Data Portability</strong>: Receive your data in a structured format</li>
+                </ul>
+                <p class="timeline-description">
+                    To exercise these rights, please contact me at <a href="mailto:sumedh.sankhe@gmail.com">sumedh.sankhe@gmail.com</a>.
+                </p>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Sumedh R. Sankhe. All rights reserved. | <a href="privacy.html" style="color: var(--gray-600); text-decoration: underline;">Privacy Policy</a></p>
+    </footer>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <p>
+                    I use cookies and analytics to improve your experience and understand how you use this site.
+                    By accepting, you consent to the use of Google Analytics with IP anonymization.
+                    <a href="privacy.html">Learn more</a>
+                </p>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button id="cookieAccept" class="cookie-btn cookie-btn-accept" aria-label="Accept cookies">
+                    Accept
+                </button>
+                <button id="cookieDecline" class="cookie-btn cookie-btn-decline" aria-label="Decline cookies">
+                    Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+    <script>
+        // Reset consent functionality for privacy page
+        document.getElementById('resetConsent')?.addEventListener('click', function() {
+            localStorage.removeItem('cookieConsent');
+            alert('Your cookie preferences have been reset. The page will reload to show the consent banner.');
+            location.reload();
+        });
+    </script>
+</body>
+</html>

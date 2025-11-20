@@ -359,14 +359,97 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // ==========================================================================
-// ANALYTICS (Optional - Uncomment if needed)
+// COOKIE CONSENT BANNER
 // ==========================================================================
 
 /**
- * Track page views (example for Google Analytics)
- * Uncomment and configure if you want analytics
+ * Cookie consent banner for GDPR/privacy compliance
+ * Shows banner if user hasn't made a choice
+ * Loads GA4 only after consent is given
  */
-// window.dataLayer = window.dataLayer || [];
-// function gtag(){dataLayer.push(arguments);}
-// gtag('js', new Date());
-// gtag('config', 'YOUR-GA-TRACKING-ID');
+(function initializeCookieConsent() {
+    'use strict';
+
+    // Check if user has already made a choice
+    const consentStatus = localStorage.getItem('cookieConsent');
+    const banner = document.getElementById('cookieConsent');
+
+    if (!banner) return; // Banner not found
+
+    // Show banner if no choice has been made
+    if (!consentStatus) {
+        setTimeout(() => {
+            banner.classList.add('show');
+        }, 1000); // Show after 1 second delay
+    }
+
+    // Accept cookies button
+    const acceptBtn = document.getElementById('cookieAccept');
+    if (acceptBtn) {
+        acceptBtn.addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'accepted');
+            banner.classList.remove('show');
+
+            // Load Google Analytics
+            loadGoogleAnalytics();
+        });
+    }
+
+    // Decline cookies button
+    const declineBtn = document.getElementById('cookieDecline');
+    if (declineBtn) {
+        declineBtn.addEventListener('click', function() {
+            localStorage.setItem('cookieConsent', 'declined');
+            banner.classList.remove('show');
+        });
+    }
+
+    /**
+     * Load Google Analytics dynamically after consent
+     */
+    function loadGoogleAnalytics() {
+        // Check if already loaded
+        if (window.gtag && window.dataLayer && window.dataLayer.length > 0) {
+            return;
+        }
+
+        // Load gtag script
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-ZB17TTEQRQ';
+        document.head.appendChild(script);
+
+        // Initialize gtag
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){window.dataLayer.push(arguments);}
+        window.gtag = gtag;
+
+        gtag('js', new Date());
+        gtag('config', 'G-ZB17TTEQRQ', {
+            'anonymize_ip': true,
+            'allow_google_signals': false,
+            'allow_ad_personalization_signals': false,
+            'cookie_flags': 'SameSite=None;Secure'
+        });
+
+        console.log('Google Analytics loaded after consent');
+    }
+})();
+
+// ==========================================================================
+// ANALYTICS
+// ==========================================================================
+
+/**
+ * Google Analytics 4 tracking with privacy-friendly settings
+ * Measurement ID: G-ZB17TTEQRQ
+ *
+ * Privacy features enabled:
+ * - IP anonymization
+ * - No advertising signals
+ * - No ad personalization
+ * - Consent-based loading (only loads after user accepts)
+ *
+ * Custom event tracking can be added here if needed:
+ * Example: gtag('event', 'button_click', { 'event_category': 'engagement' });
+ */
