@@ -58,6 +58,20 @@ To add a third theme (e.g., 'auto' or 'high-contrast'):
 3. Update toggle button logic in `script.js`
 4. Add new theme icon
 
+### Image Optimization
+
+**Problem**: `profile.png` is 438KB but displayed at 200x200 (3x oversized).
+
+**Solution**:
+```bash
+pip install Pillow
+python3 optimize_images.py
+```
+
+**Results**: Generates optimized sizes (200x, 400x) in PNG and WebP formats with ~95% size reduction.
+
+**Next**: Update `index.html` to use `<picture>` element for responsive image serving.
+
 ## 🌐 Browser Compatibility
 
 | Browser | Version | Support |
