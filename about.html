@@ -8,14 +8,28 @@
     <title>About | Sumedh R. Sankhe</title>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
 
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-ZB17TTEQRQ"></script>
+    <!-- Google tag (gtag.js) - Consent-based loading -->
     <script>
+      // Initialize gtag placeholder
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'G-ZB17TTEQRQ');
+      // Check if user has consented
+      if (localStorage.getItem('cookieConsent') === 'accepted') {
+        // Load GA4 with privacy-friendly settings
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-ZB17TTEQRQ';
+        document.head.appendChild(script);
+
+        gtag('js', new Date());
+        gtag('config', 'G-ZB17TTEQRQ', {
+          'anonymize_ip': true,
+          'allow_google_signals': false,
+          'allow_ad_personalization_signals': false,
+          'cookie_flags': 'SameSite=None;Secure'
+        });
+      }
     </script>
     <!-- Stylesheet -->
     <link rel="stylesheet" href="styles.css">
@@ -212,6 +226,27 @@
     <footer>
         <p>&copy; 2025 Sumedh R. Sankhe. All rights reserved.</p>
     </footer>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <p>
+                    We use cookies and analytics to improve your experience and understand how you use our site.
+                    By accepting, you consent to the use of Google Analytics with IP anonymization.
+                    <a href="privacy.html">Learn more</a>
+                </p>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button id="cookieAccept" class="cookie-btn cookie-btn-accept" aria-label="Accept cookies">
+                    Accept
+                </button>
+                <button id="cookieDecline" class="cookie-btn cookie-btn-decline" aria-label="Decline cookies">
+                    Decline
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- JavaScript -->
     <script src="script.js"></script>
