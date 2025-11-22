@@ -97,7 +97,7 @@ python3 optimize_images.py
 
 ### 2025-11-20: Analytics, Privacy & SEO
 
-- ✅ Google Analytics 4 with consent-based loading (G-ZB17TTEQRQ)
+- ✅ Google Analytics 4 with consent-based loading
 - ✅ GDPR-compliant cookie consent banner
 - ✅ Privacy policy page with user rights and data disclosure
 - ✅ Comprehensive SEO metadata (Open Graph, Twitter Cards, JSON-LD)
