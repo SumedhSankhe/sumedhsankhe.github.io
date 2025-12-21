@@ -1536,6 +1536,55 @@ button:focus {
     text-align: left;
 }
 
+/* Blogroll Section */
+.blogroll-section {
+    margin-top: 4rem;
+    padding: 2rem;
+    background: var(--gray-50);
+    border-radius: 10px;
+    border: 1px solid var(--gray-200);
+}
+
+.blogroll-section h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+}
+
+.blogroll-list {
+    list-style: none;
+    padding: 0;
+}
+
+.blogroll-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.blogroll-list li:last-child {
+    border-bottom: none;
+}
+
+.blogroll-list a {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1.0625rem;
+    transition: color 0.2s ease;
+}
+
+.blogroll-list a:hover {
+    color: var(--primary-dark);
+    text-decoration: underline;
+}
+
+.blogroll-description {
+    color: var(--gray-600);
+    font-size: 0.9375rem;
+    margin-left: 0.5rem;
+}
+
 /* Blog Posts Grid */
 .blog-posts-grid {
     display: grid;
