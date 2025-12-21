@@ -72,6 +72,12 @@
                 document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
             }
         })();
+
+        // Initialize colorblind mode to prevent FOUC
+        const savedColorblindMode = localStorage.getItem('colorblindMode');
+        if (savedColorblindMode === 'true') {
+            document.documentElement.setAttribute('data-colorblind', 'true');
+        }
     </script>
 </head>
 <body>
@@ -83,9 +89,14 @@
         <div class="nav-container">
             <div class="nav-left">
                 <div class="logo">Sumedh R. Sankhe</div>
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                    <span id="themeIcon">◐</span>
-                </button>
+                <div class="toggle-buttons">
+                    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                        <span id="themeIcon">◐</span>
+                    </button>
+                    <button type="button" class="colorblind-toggle" id="colorblindToggle" aria-label="Toggle colorblind-friendly mode" title="Colorblind-friendly colors">
+                        <span id="colorblindIcon">👁</span>
+                    </button>
+                </div>
             </div>
             <button type="button" class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
                 <span id="menuIcon">☰</span>

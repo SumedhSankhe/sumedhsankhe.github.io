@@ -97,6 +97,78 @@
 })();
 
 // ==========================================================================
+// COLORBLIND-FRIENDLY MODE TOGGLE
+// ==========================================================================
+
+/**
+ * Initialize colorblind-friendly mode toggle
+ * - Uses high-contrast blue-orange palette safe for all colorblind types
+ * - Saves preference to localStorage
+ * - Updates UI to reflect current mode
+ */
+(function initializeColorblindMode() {
+    const colorblindToggle = document.getElementById('colorblindToggle');
+    const colorblindIcon = document.getElementById('colorblindIcon');
+    const html = document.documentElement;
+
+    // Check localStorage for saved preference
+    const savedColorblindMode = localStorage.getItem('colorblindMode');
+    const isColorblindMode = savedColorblindMode === 'true';
+
+    // Set initial state
+    if (isColorblindMode) {
+        html.setAttribute('data-colorblind', 'true');
+    }
+    updateColorblindIcon(isColorblindMode);
+
+    // Add click event listener
+    if (colorblindToggle) {
+        colorblindToggle.addEventListener('click', toggleColorblindMode);
+    }
+
+    /**
+     * Toggle colorblind-friendly mode
+     */
+    function toggleColorblindMode() {
+        const currentMode = html.getAttribute('data-colorblind') === 'true';
+        const newMode = !currentMode;
+
+        // Add transition class
+        html.classList.add('theme-transition');
+
+        // Update state
+        if (newMode) {
+            html.setAttribute('data-colorblind', 'true');
+        } else {
+            html.removeAttribute('data-colorblind');
+        }
+
+        // Save to localStorage
+        localStorage.setItem('colorblindMode', newMode.toString());
+        updateColorblindIcon(newMode);
+
+        // Remove transition class after animation
+        setTimeout(() => {
+            html.classList.remove('theme-transition');
+        }, 500);
+    }
+
+    /**
+     * Update the colorblind toggle icon
+     * @param {boolean} isActive - Whether colorblind mode is active
+     */
+    function updateColorblindIcon(isActive) {
+        if (colorblindIcon) {
+            colorblindIcon.textContent = isActive ? '👁️' : '👁';
+            colorblindToggle.setAttribute('aria-pressed', isActive.toString());
+            colorblindToggle.title = isActive
+                ? 'Disable colorblind-friendly mode'
+                : 'Enable colorblind-friendly mode';
+        }
+    }
+})();
+
+// ==========================================================================
 // MOBILE MENU TOGGLE
 // ==========================================================================
 
@@ -356,6 +428,144 @@ document.addEventListener('DOMContentLoaded', function() {
             closeAllEnlarged();
         }
     });
+});
+
+// ==========================================================================
+// BLOG POSTS LOADING
+// ==========================================================================
+
+/**
+ * Load and display blog posts from JSON configuration
+ * Handles dynamic rendering of blog cards on the blog page
+ */
+document.addEventListener('DOMContentLoaded', function() {
+    const blogPostsGrid = document.getElementById('blogPostsGrid');
+    const blogLoading = document.getElementById('blogLoading');
+    const blogEmpty = document.getElementById('blogEmpty');
+
+    // Only run on blog page
+    if (!blogPostsGrid) return;
+
+    /**
+     * Fetch blog posts from JSON file
+     */
+    async function loadBlogPosts() {
+        try {
+            const response = await fetch('blog/blog-posts.json');
+            if (!response.ok) {
+                throw new Error('Failed to load blog posts');
+            }
+            const data = await response.json();
+            displayBlogPosts(data.posts);
+        } catch (error) {
+            console.error('Error loading blog posts:', error);
+            showEmptyState();
+        }
+    }
+
+    /**
+     * Display blog posts in the grid
+     * @param {Array} posts - Array of blog post objects
+     */
+    function displayBlogPosts(posts) {
+        // Hide loading state
+        if (blogLoading) {
+            blogLoading.classList.add('hidden');
+        }
+
+        // Show empty state if no posts
+        if (!posts || posts.length === 0) {
+            showEmptyState();
+            return;
+        }
+
+        // Sort posts by date (newest first)
+        const sortedPosts = posts.sort((a, b) => {
+            return new Date(b.date) - new Date(a.date);
+        });
+
+        // Create blog cards
+        sortedPosts.forEach(post => {
+            const card = createBlogCard(post);
+            blogPostsGrid.appendChild(card);
+        });
+    }
+
+    /**
+     * Create a blog card element
+     * @param {Object} post - Blog post object
+     * @returns {HTMLElement} Blog card element
+     */
+    function createBlogCard(post) {
+        const card = document.createElement('div');
+        card.className = 'blog-card';
+        card.setAttribute('role', 'article');
+
+        // Format date
+        const date = new Date(post.date);
+        const formattedDate = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        });
+
+        // Create card HTML
+        card.innerHTML = `
+            ${post.featured ? '<div class="featured-badge">Featured</div>' : ''}
+            <h3>${escapeHtml(post.title)}</h3>
+            <div class="blog-meta">
+                <time datetime="${post.date}">${formattedDate}</time>
+                <span class="meta-separator">•</span>
+                <span>${post.readTime}</span>
+            </div>
+            <p>${escapeHtml(post.description)}</p>
+            <div class="blog-tags">
+                ${post.tags.map(tag => `<span class="tag">${escapeHtml(tag)}</span>`).join('')}
+            </div>
+        `;
+
+        // Add click event to navigate to post
+        card.addEventListener('click', () => {
+            window.location.href = `blog/posts/${post.file}`;
+        });
+
+        // Add keyboard accessibility
+        card.setAttribute('tabindex', '0');
+        card.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                window.location.href = `blog/posts/${post.file}`;
+            }
+        });
+
+        return card;
+    }
+
+    /**
+     * Show empty state when no posts are available
+     */
+    function showEmptyState() {
+        if (blogLoading) {
+            blogLoading.classList.add('hidden');
+        }
+        if (blogEmpty) {
+            blogEmpty.classList.remove('hidden');
+        }
+    }
+
+    /**
+     * Escape HTML to prevent XSS attacks
+     * @param {string} text - Text to escape
+     * @returns {string} Escaped text
+     */
+    function escapeHtml(text) {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    }
+
+    // Initialize blog posts loading
+    loadBlogPosts();
 });
 
 // ==========================================================================
