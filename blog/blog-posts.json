@@ -1,0 +1,13 @@
+{
+  "posts": [
+    {
+      "id": "docker-optimization",
+      "title": "Optimizing R Shiny Docker Builds: Warm vs Cold Build Strategy",
+      "date": "2025-12-16",
+      "readTime": "15 min read",
+      "excerpt": "How we optimized Docker builds for a customer-facing R Shiny SaaS application by separating code changes (8-15 min) from dependency changes (40 min) and reduced image sizes by 42%. Learn the practical techniques that transformed our CI/CD pipeline at Alamar Biosciences.",
+      "tags": ["Docker", "R", "Shiny", "DevOps", "Performance", "Kubernetes", "SaaS"],
+      "file": "docker-optimization.html"
+    }
+  ]
+}

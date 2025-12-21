@@ -1642,7 +1642,7 @@ button:focus {
 .blog-post {
     max-width: 800px;
     margin: 0 auto;
-    padding: 2rem;
+    padding: 6rem 2rem 2rem 2rem;
 }
 
 .blog-post-header {
@@ -1785,11 +1785,92 @@ button:focus {
 }
 
 .blog-post-footer {
+    margin-top: 4rem;
+    padding-top: 2rem;
+    border-top: 2px solid var(--gray-200);
+}
+
+.blog-back-link {
+    color: var(--primary);
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+}
+
+.blog-back-link:hover {
+    text-decoration: underline;
+    color: var(--primary-dark);
+}
+
+/* Blog Intro Section */
+.blog-intro {
+    font-size: 1.125rem;
+    color: var(--gray-700);
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background: var(--gray-50);
+    border-left: 4px solid var(--primary);
+    border-radius: 4px;
+}
+
+/* Blog Tables */
+.blog-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 2rem 0;
+    font-size: 0.9375rem;
     background: var(--light);
+    border: 1px solid var(--gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.blog-table thead {
+    background: var(--gray-100);
+}
+
+.blog-table th {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--dark);
+    border-bottom: 2px solid var(--gray-200);
+}
+
+.blog-table td {
+    padding: 1rem;
+    border-bottom: 1px solid var(--gray-200);
+    color: var(--dark);
+}
+
+.blog-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.blog-table tbody tr:hover {
+    background: var(--gray-50);
+}
+
+/* Blog Notes/Callouts */
+.blog-note {
+    background: var(--gray-50);
     border-left: 4px solid var(--primary);
     padding: 1.5rem;
-    margin-top: 3rem;
-    border-radius: 8px;
+    margin: 2rem 0;
+    border-radius: 4px;
+}
+
+.blog-note p {
+    margin-bottom: 1rem;
+}
+
+.blog-note p:last-child {
+    margin-bottom: 0;
+}
+
+.blog-note ul {
+    margin-top: 1rem;
 }
 
 /* Utility Classes */
@@ -1817,5 +1898,14 @@ button:focus {
 
     .blog-post-content h3 {
         font-size: 1.25rem;
+    }
+
+    .blog-table {
+        font-size: 0.8125rem;
+    }
+
+    .blog-table th,
+    .blog-table td {
+        padding: 0.75rem 0.5rem;
     }
 }
