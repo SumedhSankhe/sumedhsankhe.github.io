@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How we optimized Docker builds for a customer-facing R Shiny SaaS application by separating code changes (8-15 min) from dependency changes (40 min) and reduced image sizes by 42%">
+    <meta name="author" content="Sumedh R. Sankhe">
+    <meta name="keywords" content="Docker, R, Shiny, DevOps, Performance, Kubernetes, SaaS, Multistage Builds">
+    <title>Optimizing R Shiny Docker Builds | Sumedh R. Sankhe</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" content="https://sumedhsankhe.github.io/blog/posts/docker-optimization.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://sumedhsankhe.github.io/blog/posts/docker-optimization.html">
+    <meta property="og:title" content="Optimizing R Shiny Docker Builds: Warm vs Cold Build Strategy">
+    <meta property="og:description" content="How we optimized Docker builds for a customer-facing R Shiny SaaS application and reduced image sizes by 42%">
+    <meta property="og:image" content="https://sumedhsankhe.github.io/profile.png">
+    <meta property="article:published_time" content="2025-12-16">
+    <meta property="article:author" content="Sumedh R. Sankhe">
+    <meta property="article:tag" content="Docker">
+    <meta property="article:tag" content="R Shiny">
+    <meta property="article:tag" content="DevOps">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Optimizing R Shiny Docker Builds: Warm vs Cold Build Strategy">
+    <meta name="twitter:description" content="How we optimized Docker builds for a customer-facing R Shiny SaaS application and reduced image sizes by 42%">
+
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow">
+
+    <!-- Google tag (gtag.js) - Consent-based loading -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      if (localStorage.getItem('cookieConsent') === 'accepted') {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-ZB17TTEQRQ';
+        document.head.appendChild(script);
+
+        gtag('js', new Date());
+        gtag('config', 'G-ZB17TTEQRQ', {
+          'anonymize_ip': true,
+          'allow_google_signals': false,
+          'allow_ad_personalization_signals': false,
+          'cookie_flags': 'SameSite=None;Secure'
+        });
+      }
+    </script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="../../styles.css">
+
+    <!-- Inline theme script to prevent FOUC -->
+    <script>
+        (function() {
+            try {
+                const validThemes = ['light', 'dark'];
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = validThemes.includes(savedTheme) ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+
+                // Initialize colorblind mode to prevent FOUC
+                const savedColorblindMode = localStorage.getItem('colorblindMode');
+                if (savedColorblindMode === 'true') {
+                    document.documentElement.setAttribute('data-colorblind', 'true');
+                }
+            } catch (e) {
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">Sumedh R. Sankhe</div>
+                <div class="toggle-buttons">
+                    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                        <span id="themeIcon">◐</span>
+                    </button>
+                    <button type="button" class="colorblind-toggle" id="colorblindToggle" aria-label="Toggle colorblind-friendly mode" title="Colorblind-friendly colors">
+                        <span id="colorblindIcon">👁</span>
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span id="menuIcon">☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../about.html">About</a></li>
+                <li><a href="../../projects.html">Projects</a></li>
+                <li><a href="../../skills.html">Skills</a></li>
+                <li><a href="../../blog.html" class="active" aria-current="page">Blog</a></li>
+                <li><a href="../../contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Article Header -->
+        <article class="blog-post">
+            <header class="blog-post-header">
+                <div class="blog-post-meta">
+                    <time datetime="2025-12-16">December 16, 2025</time>
+                    <span class="blog-post-separator">•</span>
+                    <span class="blog-post-read-time">15 min read</span>
+                </div>
+                <h1>Optimizing R Shiny Docker Builds: Warm vs Cold Build Strategy</h1>
+                <p class="blog-post-subtitle">How we optimized Docker builds for a customer-facing R Shiny SaaS application by separating code changes (8-15 min) from dependency changes (40 min) and reduced image sizes by 42%</p>
+                <div class="blog-post-tags">
+                    <span class="blog-tag">Docker</span>
+                    <span class="blog-tag">R</span>
+                    <span class="blog-tag">Shiny</span>
+                    <span class="blog-tag">DevOps</span>
+                    <span class="blog-tag">Performance</span>
+                    <span class="blog-tag">Kubernetes</span>
+                    <span class="blog-tag">SaaS</span>
+                </div>
+            </header>
+
+            <!-- Article Content -->
+            <div class="blog-post-content">
+                <p class="blog-intro">This is my first time writing up a technical blog post, so bear with me. I'm going to share what we learned optimizing Docker builds for R Shiny apps, including the things that broke along the way.</p>
+
+                <p>At Alamar Biosciences, I work on the NULISA Analysis Software (NAS) - a <strong>large-scale, customer-facing SaaS application</strong> for analyzing proteomics data, built with R Shiny and running on Azure Kubernetes Service (AKS). NAS is used by customers across academia and industry worldwide as a free cloud service. Unlike typical internal Shiny apps deployed with Posit Connect, NAS serves external customers directly, which means deployment speed, reliability, and scalability are critical for customer satisfaction and platform availability.</p>
+
+                <p>Our Docker builds were taking 20-25 minutes. Every. Single. Build. It didn't matter if you changed one line of code or overhauled the entire data processing pipeline—Docker would reinstall all 200+ R packages from scratch. A simple bug fix? Wait 25 minutes. Testing a UI tweak? Another 25 minutes. Our images were pushing 1.5GB compressed to Azure Container Registry. When you're shipping features to customers and fixing production bugs, treating every build the same kills your velocity.</p>
+
+                <p>This post walks through the optimizations we implemented in late 2025 that fundamentally changed how we build Docker images. The key insight: <strong>separate code changes from dependency changes</strong>. Now, the common case (code changes) builds in 8-15 minutes—a 60-68% improvement—while dependency updates take longer (40 mins) but happen infrequently. We also reduced image sizes by 42% (1.5GB → 870MB compressed in ACR). The optimization involves splitting stable CRAN dependencies into a base image, leveraging rocker/r2u for binary package installation, and properly structuring multistage builds. More importantly, this post covers the things that broke along the way and how we fixed them.</p>
+
+                <h2 id="the-problem">The Problem: Slow, Bloated Docker Images</h2>
+
+                <p>Our original Dockerfile followed a common pattern—straightforward but inefficient:</p>
+
+                <pre><code class="language-dockerfile">FROM rocker/r2u:24.04
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    # ... many more -dev packages
+
+WORKDIR /app
+
+# Copy everything at once
+COPY . .
+
+# Install R packages
+RUN R -e "install.packages('renv')"
+RUN R -e "renv::restore()"
+
+EXPOSE 3838
+CMD ["R", "-e", "shiny::runApp('/app', host='0.0.0.0', port=3838)"]</code></pre>
+
+                <p>This approach had three big problems:</p>
+
+                <h3>Problem 1: Poor Layer Caching</h3>
+
+                <p>Any change to our application code—even fixing a typo in <code>app.R</code>—would invalidate the <code>renv::restore()</code> layer. Docker would reinstall ALL 200+ R packages from scratch. We're talking the usual suspects like <code>ggplot2</code>, <code>plotly</code>, <code>DT</code>, plus a ton of domain-specific proteomics packages, and 2 custom in-house packages. Every. Single. Time. On our GitHub Actions runners, that's 60+ minutes of watching packages compile and tests run.</p>
+
+                <h3>Problem 2: Bloated Production Images</h3>
+
+                <p>Our final images had everything needed to build the app, not just run it. All the build tools like <code>gcc</code>, <code>make</code>, and those <code>-dev</code> system libraries were just sitting there in production taking up space. The result? Nearly 2GB uncompressed images when the actual runtime stuff could be much smaller.</p>
+
+                <h3>Problem 3: Slow CI/CD Pipelines</h3>
+
+                <p>Here's what our Azure Kubernetes deployment looked like:</p>
+                <ol>
+                    <li>Push a code change (bug fix, new feature, etc.)</li>
+                    <li>GitHub Actions starts building</li>
+                    <li>Wait 20-25 minutes (go get coffee, check Slack, lose focus)</li>
+                    <li>Push to Azure Container Registry</li>
+                    <li>Deploy to AKS</li>
+                </ol>
+
+                <p>Those build times killed productivity. You'd push a fix, then switch to something else while waiting. By the time the build finished, you'd forgotten what you were even working on. It was like waiting for a Wonder to be built while your opponents are rushing you with trebuchets.</p>
+
+                <p><strong>Why this matters for SaaS:</strong> With Posit Connect, you typically deploy once and iterate internally. With a customer-facing SaaS on Kubernetes, you're constantly shipping features, bug fixes, and updates. Fast build times directly impact how quickly you can respond to customer issues and ship improvements. A 25-minute build cycle for every code change means you can only deploy a handful of times per day. That's not acceptable for modern SaaS development.</p>
+
+                <h2 id="the-solution">The Solution: Multistage Docker Builds</h2>
+
+                <p>The fix involves three core strategies (think of it as your build order):</p>
+
+                <ol>
+                    <li><strong>Separate build from runtime</strong> using Docker multistage builds</li>
+                    <li><strong>Optimize layer caching</strong> by copying dependencies before code</li>
+                    <li><strong>Minimize runtime dependencies</strong> to only what's needed to run the app</li>
+                </ol>
+
+                <p>Let me show you exactly how this works. If you're familiar with AoE2, this is basically advancing from Dark Age (single-stage mess) to Imperial Age (optimized multistage build).</p>
+
+                <h2 id="implementation">Implementation: Building the Optimized Dockerfile</h2>
+
+                <p>I'm going to walk through the multistage Dockerfile step by step. In the demo repo, I have a simple two-stage version for the example app. But for NAS, we actually use a three-stage build that separates CRAN packages from our custom packages. This makes sense when you have custom packages that change more frequently than your CRAN dependencies. For simpler apps, two stages is plenty.</p>
+
+                <h3>Stage 1: The Builder</h3>
+
+                <p>This stage compiles all the packages and prepares the app. In our real NAS setup, this is where we also install custom packages and run unit tests (unit testing in Docker builds deserves its own blog post, so I won't dive into that here):</p>
+
+                <pre><code class="language-dockerfile"># ============ STAGE 1: Builder ============
+FROM rocker/r2u:24.04 AS builder
+
+# Configure renv cache to use consistent path across stages
+ENV RENV_PATHS_CACHE="/app/renv/.cache"
+
+# Install build dependencies (with -dev packages)
+RUN apt-get update && apt-get install -y \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libxml2-dev \
+    libfontconfig1-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# CRITICAL: Copy ONLY dependency files first
+COPY renv.lock renv.lock
+COPY .Rprofile .Rprofile
+COPY renv/activate.R renv/activate.R
+COPY renv/settings.json renv/settings.json
+
+# Install packages - this layer is cached unless renv.lock changes
+RUN R -e "install.packages('renv', repos='https://cloud.r-project.org')"
+RUN R -e "renv::restore()"
+
+# Copy application code AFTER dependencies are installed
+# This means code changes don't invalidate the package layer
+COPY app.R app.R</code></pre>
+
+                <p><strong>The key part:</strong> Notice how we copy <code>renv.lock</code> and the renv files separately from <code>app.R</code>. Your lockfile only changes when you add or remove packages (maybe once a week?). Your application code changes constantly (multiple times a day). By separating them, Docker can cache the expensive <code>renv::restore()</code> step and skip it when you only change your app code.</p>
+
+                <h3>Stage 2: The Runtime</h3>
+
+                <p>Now we build a clean runtime image that only has what's needed to run the app:</p>
+
+                <pre><code class="language-dockerfile"># ============ STAGE 2: Runtime ============
+FROM rocker/r2u:24.04
+
+# Configure renv cache to match builder stage
+ENV RENV_PATHS_CACHE="/app/renv/.cache"
+
+# Install ONLY runtime libraries (no -dev packages)
+RUN apt-get update && apt-get install -y \
+    libcurl4 \
+    libssl3 \
+    libxml2 \
+    libfontconfig1 \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy the compiled renv library from builder (includes cache)
+COPY --from=builder /app/renv /app/renv
+COPY --from=builder /app/.Rprofile /app/.Rprofile
+COPY --from=builder /app/renv.lock /app/renv.lock
+
+# Copy application code
+COPY --from=builder /app/app.R /app/app.R
+
+EXPOSE 3838
+CMD ["R", "--vanilla", "-e", ".libPaths('/app/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu'); shiny::runApp('/app', host='0.0.0.0', port=3838)"]</code></pre>
+
+                <p><strong>What's happening here:</strong> The runtime stage starts fresh and uses <code>COPY --from=builder</code> to grab the compiled packages. Notice we're installing <code>libcurl4</code> instead of <code>libcurl4-openssl-dev</code>. The <code>-dev</code> packages include headers and build tools. We don't need those to run the app, only to compile packages. This alone saves hundreds of megabytes.</p>
+
+                <p>Also notice the CMD uses <code>--vanilla</code> - that's the fix for the renv runtime issue I mentioned earlier.</p>
+
+                <h2 id="things-broke">Things That Broke (And How I Fixed Them)</h2>
+
+                <p>Okay, so I thought I was done after writing the multistage Dockerfile. Built the images, they looked great. Then I actually tried to run them and... the app wouldn't start. Here's what went wrong.</p>
+
+                <h3>Issue 1: renv Trying to Reinstall Packages at Runtime</h3>
+
+                <p>The containers would start, but then renv would activate (because of <code>.Rprofile</code>) and immediately complain that packages were missing or out of sync. It would try to reinstall everything at runtime. Turns out my <code>renv.lock</code> file was missing a bunch of transitive dependencies - things like <code>cpp11</code>, <code>crosstalk</code>, <code>farver</code>. These aren't packages I explicitly use, but they're dependencies of dependencies.</p>
+
+                <p>When renv detected these weren't in the lockfile, it thought something was wrong and tried to "fix" it by reinstalling. In a running container. Which obviously failed.</p>
+
+                <p><strong>The fix:</strong> I disabled renv activation at runtime by using <code>R --vanilla</code> which skips the <code>.Rprofile</code>. Then I explicitly set the library path in the CMD:</p>
+
+                <pre><code class="language-dockerfile">CMD ["R", "--vanilla", "-e", ".libPaths('/app/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu'); shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]</code></pre>
+
+                <p>This way, R uses the pre-installed packages but doesn't trigger renv's "helpful" automatic restoration.</p>
+
+                <h3>Issue 2: Broken Symlinks in Multistage Builds</h3>
+
+                <p>Even after fixing the renv activation issue, the multistage builds still wouldn't work. Shiny couldn't find any packages. Turns out renv uses symlinks to a cache directory at <code>/root/.cache/R/renv/cache/</code>. When I copied the renv library between stages, I was copying the symlinks but not the actual files they pointed to. So every package was just a broken link.</p>
+
+                <p>I spent way too long debugging this before I realized what was happening.</p>
+
+                <p><strong>The fix:</strong> Copy the renv cache along with the library:</p>
+
+                <pre><code class="language-dockerfile"># Copy the renv cache (symlinks in renv/library point to this cache)
+COPY --from=builder /root/.cache/R/renv /root/.cache/R/renv</code></pre>
+
+                <p>Now the symlinks work and packages load properly.</p>
+
+                <h3>Lesson Learned</h3>
+
+                <p>Test your containers actually run, not just build. I wasted a couple hours assuming that if the build succeeded, everything was fine. Docker's multistage builds add complexity, especially with package managers that use caching strategies like renv. Don't be like me clicking "I'm ready!" before actually being ready - test your builds like you're scouting your opponent's base before committing to a strategy.</p>
+
+                <h2 id="results">Results: Quantified Performance Improvements</h2>
+
+                <p>Here are the real numbers from our GitHub Actions workflow on the demo repo:</p>
+
+                <table class="blog-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Single-Stage</th>
+                            <th>Two-Stage</th>
+                            <th>Three-Stage</th>
+                            <th>Improvement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Image size (GHCR)</strong></td>
+                            <td>1.27 GB</td>
+                            <td>948 MB</td>
+                            <td>948 MB</td>
+                            <td><strong>25% smaller</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Warm build</strong> (code change only)</td>
+                            <td>5-7 mins</td>
+                            <td>~30s</td>
+                            <td>~30s</td>
+                            <td><strong>92-94% faster</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cold build</strong> (no cache)</td>
+                            <td>8-10 mins</td>
+                            <td>6-8 mins</td>
+                            <td>6-8 mins</td>
+                            <td>20-25% faster</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>For our production NAS application with 200+ CRAN packages and 2 custom in-house packages:</p>
+
+                <table class="blog-table">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Before (NAS 1.3)</th>
+                            <th>After (NAS 1.4)</th>
+                            <th>Improvement</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Image size (ACR compressed)</strong></td>
+                            <td>1.5 GB</td>
+                            <td>870 MB</td>
+                            <td><strong>42% smaller</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Warm build</strong> (code change only)</td>
+                            <td>20-25 mins</td>
+                            <td>8-15 mins</td>
+                            <td><strong>60-68% faster</strong></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cold build</strong> (dependency change)</td>
+                            <td>20-25 mins</td>
+                            <td>40 mins</td>
+                            <td>Slower, but infrequent</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <div class="blog-note">
+                    <p><strong>Note:</strong> Our production setup includes additional optimizations beyond the scope of this post: automated base image rebuilds triggered by renv.lock hash changes, cache-busting strategies for custom package updates, and GitHub Actions runner cleanup for multi-stage builds. These advanced CI/CD integrations will be covered in a follow-up post.</p>
+                </div>
+
+                <div class="blog-note">
+                    <p><strong>Note on image sizes:</strong> The sizes shown are <strong>compressed sizes</strong> as stored in container registries (ACR/GHCR). These are the sizes that matter for:</p>
+                    <ul>
+                        <li>Registry storage costs</li>
+                        <li>Network transfer time during push/pull</li>
+                        <li>Initial deployment speed to Kubernetes</li>
+                    </ul>
+                    <p>Container registries compress images to about 25-35% of their uncompressed size. So the 870MB compressed NAS image is ~2.2-2.6GB when uncompressed on disk. The demo app achieves a 25% reduction in registry size, while our production NAS app sees a 42% reduction (1.5GB → 870MB in ACR).</p>
+                </div>
+
+                <div class="blog-note">
+                    <p><strong>Note on warm vs cold builds:</strong> The key optimization is <strong>distinguishing between these two scenarios</strong>. Our original setup treated every build the same—changing one line of code triggered a full 20-25 minute rebuild with all packages reinstalled. The optimized approach separates:</p>
+                    <ul>
+                        <li><strong>Warm builds</strong> (90% of builds): Code changes only → 8-15 mins</li>
+                        <li><strong>Cold builds</strong> (10% of builds): Dependency changes → 40 mins (longer, but comprehensive and cached)</li>
+                    </ul>
+                    <p>Yes, cold builds are now slower, but they happen rarely (when you add/update packages). The common case (shipping code) is 60-68% faster.</p>
+                </div>
+
+                <p>The full CI/CD pipeline includes additional steps beyond the Docker build: running unit tests, extracting test results, publishing them to GitHub, security scanning, etc. That's why the end-to-end time is longer than just the Docker build. The unit testing integration will be covered in a separate blog post.</p>
+
+                <h2 id="layer-caching">How Layer Caching Actually Works</h2>
+
+                <p>This took me a while to really understand, so let me break it down. Each <code>RUN</code>, <code>COPY</code>, or <code>ADD</code> instruction in a Dockerfile creates a new layer. Docker caches these layers and reuses them if:</p>
+
+                <ol>
+                    <li>The instruction hasn't changed</li>
+                    <li>All previous layers are unchanged</li>
+                    <li>For <code>COPY</code>, the file contents are identical</li>
+                </ol>
+
+                <p><strong>The wrong way (what I had originally):</strong></p>
+                <pre><code class="language-dockerfile">COPY . .                    # Any file change invalidates this
+RUN R -e "renv::restore()"  # So this has to run again. Every time.</code></pre>
+
+                <p><strong>The right way:</strong></p>
+                <pre><code class="language-dockerfile">COPY renv.lock .            # Only changes when you add/remove packages (COLD build)
+RUN R -e "renv::restore()"  # Gets cached and reused for code changes (enables WARM builds)
+COPY app.R .                # Changes all the time, but doesn't break cache above (WARM build)</code></pre>
+
+                <p>That simple reordering creates the warm/cold build distinction:</p>
+                <ul>
+                    <li><strong>Warm build</strong>: <code>app.R</code> changes, <code>renv.lock</code> unchanged → <code>renv::restore()</code> layer is cached, build takes 30s</li>
+                    <li><strong>Cold build</strong>: <code>renv.lock</code> changes → <code>renv::restore()</code> runs, takes 6-8 mins for the demo app (40 mins for NAS with 200+ packages)</li>
+                </ul>
+
+                <p>Put your stable stuff first, your frequently changing stuff last.</p>
+
+                <h2 id="production">How This Works in Production</h2>
+
+                <p>Here's how this fits into our actual Azure Kubernetes pipeline:</p>
+
+                <pre><code class="language-yaml"># .github/workflows/deploy.yml (simplified)
+name: Build and Deploy to AKS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Build Docker image
+        run: |
+          docker build \
+            -f Dockerfile.multistage \
+            -t nasapp:${{ github.sha }} \
+            --cache-from nasapp:latest \
+            .
+
+      - name: Push to ACR
+        run: |
+          docker tag nasapp:${{ github.sha }} \
+            ${{ secrets.ACR_NAME }}.azurecr.io/nasapp:${{ github.sha }}
+          docker push ${{ secrets.ACR_NAME }}.azurecr.io/nasapp:${{ github.sha }}</code></pre>
+
+                <p>The <code>--cache-from</code> flag helps Docker reuse layers from previous builds, which makes the caching even better.</p>
+
+                <h2 id="other-tips">Other Things That Helped</h2>
+
+                <p>Once I got the basic multistage build working, here are some other tricks I picked up:</p>
+
+                <h3>1. BuildKit and Build Secrets</h3>
+
+                <p>If you have private R packages (we do), you need to pass GitHub PATs or other credentials. Don't bake them into your image:</p>
+
+                <pre><code class="language-dockerfile"># syntax=docker/dockerfile:1
+
+RUN --mount=type=secret,id=github_pat \
+    GITHUB_PAT=$(cat /run/secrets/github_pat) \
+    R -e "renv::restore()"</code></pre>
+
+                <p>This keeps secrets out of your layers.</p>
+
+                <h3>2. Pick the Right Base Image</h3>
+
+                <p>Use <code>rocker/r2u</code> for significantly faster package installation through binary packages. This is especially beneficial for large projects with many dependencies.</p>
+
+                <pre><code class="language-dockerfile">FROM rocker/r2u:24.04 AS builder</code></pre>
+
+                <p>If you need Shiny Server (we don't - we use Kubernetes and run Shiny directly), <code>rocker/shiny</code> is also available with Shiny Server pre-installed. However, for Kubernetes deployments, <code>rocker/r2u</code> provides faster builds with smaller images.</p>
+
+                <h2 id="learned">What I Learned</h2>
+
+                <ol>
+                    <li><strong>Test everything</strong>: Building successfully doesn't mean it runs successfully</li>
+                    <li><strong>Measure what matters</strong>: I cared way more about warm rebuild time than cold build time - optimize for your actual gameplay, not theoretical perfect builds</li>
+                    <li><strong>Order matters</strong>: Put stable stuff (dependencies) before frequently changing stuff (code)</li>
+                    <li><strong>renv has quirks</strong>: It's great for reproducibility but you need to understand its caching and symlink behavior when containerizing</li>
+                </ol>
+
+                <h2 id="try-it">Try It Yourself</h2>
+
+                <p>I put together a working example with all the code:</p>
+
+                <p><strong>GitHub Repository</strong>: <a href="https://github.com/SumedhSankhe/shiny-docker-optimization" target="_blank" rel="noopener noreferrer">shiny-docker-optimization</a></p>
+
+                <p>It includes:</p>
+                <ul>
+                    <li>A simple Shiny app (mtcars dashboard, nothing fancy)</li>
+                    <li>Three Dockerfiles: single-stage (bad), multistage (better), and three-stage (for complex apps)</li>
+                    <li>Full renv setup that actually works</li>
+                    <li>Scripts to test build times</li>
+                </ul>
+
+                <p>Note: This demo app is way simpler than NAS (a few packages vs 200+, no custom packages, no unit tests). But the principles are the same, and you can see the optimization benefits even on a small app.</p>
+
+                <p>Clone it and compare the results:</p>
+
+                <pre><code class="language-bash">git clone https://github.com/SumedhSankhe/shiny-docker-optimization.git
+cd shiny-docker-optimization
+
+# Build both versions
+docker build -f Dockerfile.single-stage -t shiny-app:single .
+docker build -f Dockerfile.multistage -t shiny-app:optimized .
+
+# Compare sizes
+docker images | grep shiny-app
+
+# Run it
+docker run -p 3838:3838 shiny-app:optimized
+# Open localhost:3838</code></pre>
+
+                <h2 id="wrapping-up">Wrapping Up</h2>
+
+                <p>This was my first real dive into Docker optimization and I learned a lot. The multistage build approach is now what I use for all our Shiny apps at work. The principles apply to other languages too - separate build from runtime, order your layers carefully, and test that things actually run.</p>
+
+                <p>If you're deploying Shiny apps in containers, hopefully this saves you some time and headache.</p>
+
+                <hr>
+
+                <p><strong>Found this helpful or have questions?</strong> Open an issue on the <a href="https://github.com/SumedhSankhe/shiny-docker-optimization" target="_blank" rel="noopener noreferrer">GitHub repo</a> or connect with me on <a href="https://linkedin.com/in/sankhe" target="_blank" rel="noopener noreferrer">LinkedIn</a>.</p>
+
+                <p><strong>Some resources I found useful:</strong></p>
+                <ul>
+                    <li><a href="https://engineering-shiny.org/" target="_blank" rel="noopener noreferrer">Engineering Production-Grade Shiny Apps</a> - Great book on building real Shiny apps</li>
+                    <li><a href="https://docs.docker.com/develop/dev-best-practices/" target="_blank" rel="noopener noreferrer">Docker Build Best Practices</a> - Official Docker docs</li>
+                    <li><a href="https://rstudio.github.io/renv/" target="_blank" rel="noopener noreferrer">renv documentation</a> - Understanding how renv works helps a lot</li>
+                </ul>
+            </div>
+
+            <!-- Back to Blog -->
+            <div class="blog-post-footer">
+                <a href="../../blog.html" class="blog-back-link">← Back to Blog</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Sumedh R. Sankhe. All rights reserved.</p>
+    </footer>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <p>
+                    I use cookies and analytics to improve your experience and understand how you use this site.
+                    By accepting, you consent to the use of Google Analytics with IP anonymization.
+                    <a href="../../privacy.html">Learn more</a>
+                </p>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button id="cookieAccept" class="cookie-btn cookie-btn-accept" aria-label="Accept cookies">
+                    Accept
+                </button>
+                <button id="cookieDecline" class="cookie-btn cookie-btn-decline" aria-label="Decline cookies">
+                    Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../script.js"></script>
+</body>
+</html>
