@@ -64,6 +64,12 @@
                 const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
                 const theme = validThemes.includes(savedTheme) ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
                 document.documentElement.setAttribute('data-theme', theme);
+
+                // Initialize colorblind mode to prevent FOUC
+                const savedColorblindMode = localStorage.getItem('colorblindMode');
+                if (savedColorblindMode === 'true') {
+                    document.documentElement.setAttribute('data-colorblind', 'true');
+                }
             } catch (e) {
                 // localStorage disabled or error - fallback to system preference or light
                 const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
@@ -81,9 +87,14 @@
         <div class="nav-container">
             <div class="nav-left">
                 <div class="logo">Sumedh R. Sankhe</div>
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-                    <span id="themeIcon">◐</span>
-                </button>
+                <div class="toggle-buttons">
+                    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                        <span id="themeIcon">◐</span>
+                    </button>
+                    <button type="button" class="colorblind-toggle" id="colorblindToggle" aria-label="Toggle colorblind-friendly mode" title="Colorblind-friendly colors">
+                        <span id="colorblindIcon">👁</span>
+                    </button>
+                </div>
             </div>
             <button type="button" class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
                 <span id="menuIcon">☰</span>
@@ -107,25 +118,25 @@
             <p>Technical insights, tutorials, and thoughts on bioinformatics and software engineering</p>
         </section>
 
-        <!-- Coming Soon Content -->
+        <!-- Blog Posts Grid -->
         <div class="blog-container">
-            <div class="coming-soon-section">
+            <div id="blogPostsGrid" class="blog-posts-grid">
+                <!-- Blog posts will be loaded here dynamically -->
+            </div>
+
+            <!-- Loading State -->
+            <div id="blogLoading" class="blog-loading">
+                <p>Loading blog posts...</p>
+            </div>
+
+            <!-- Empty State -->
+            <div id="blogEmpty" class="coming-soon-section hidden">
                 <div class="coming-soon-icon">✍️</div>
-                <h2>Coming Soon</h2>
+                <h2>No Posts Yet</h2>
                 <p class="timeline-description">
                     I'm currently working on sharing technical articles, tutorials, and insights about bioinformatics,
                     R Shiny development, proteomics analysis, and software engineering best practices.
                 </p>
-                <p class="timeline-description">
-                    Topics I plan to cover include:
-                </p>
-                <ul class="timeline-highlights centered">
-                    <li>Building production-grade R Shiny applications</li>
-                    <li>Docker and Kubernetes for bioinformatics workflows</li>
-                    <li>Proteomics data analysis techniques</li>
-                    <li>Software architecture patterns for scientific computing</li>
-                    <li>Best practices in modular application design</li>
-                </ul>
                 <p class="timeline-description">
                     Want to be notified when I publish new articles? Connect with me on
                     <a href="https://linkedin.com/in/sankhe" target="_blank" rel="noopener noreferrer">LinkedIn</a>
