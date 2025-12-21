@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Sumedh R. Sankhe - Blog</title>
+    <link>https://sumedhsankhe.github.io/blog.html</link>
+    <description>Technical insights, tutorials, and thoughts on bioinformatics, R Shiny, and software engineering</description>
+    <language>en-us</language>
+    <lastBuildDate>Mon, 16 Dec 2025 00:00:00 GMT</lastBuildDate>
+    <atom:link href="https://sumedhsankhe.github.io/blog/feed.xml" rel="self" type="application/rss+xml"/>
+    <generator>Custom</generator>
+    <webMaster>noreply@sumedhsankhe.github.io (Sumedh R. Sankhe)</webMaster>
+    <copyright>Copyright 2025 Sumedh R. Sankhe. All rights reserved.</copyright>
+
+    <item>
+      <title>Optimizing R Shiny Docker Builds: Warm vs Cold Build Strategy</title>
+      <link>https://sumedhsankhe.github.io/blog/posts/docker-optimization.html</link>
+      <guid isPermaLink="true">https://sumedhsankhe.github.io/blog/posts/docker-optimization.html</guid>
+      <pubDate>Mon, 16 Dec 2025 00:00:00 GMT</pubDate>
+      <author>noreply@sumedhsankhe.github.io (Sumedh R. Sankhe)</author>
+      <category>Docker</category>
+      <category>R</category>
+      <category>Shiny</category>
+      <category>DevOps</category>
+      <category>Performance</category>
+      <category>Kubernetes</category>
+      <category>SaaS</category>
+      <description><![CDATA[
+        <p>How we optimized Docker builds for a customer-facing R Shiny SaaS application by separating code changes (8-15 min) from dependency changes (40 min) and reduced image sizes by 42%. Learn the practical techniques that transformed our CI/CD pipeline at Alamar Biosciences.</p>
+        <p>This is my first time writing up a technical blog post, so bear with me. I'm going to share what we learned optimizing Docker builds for R Shiny apps, including the things that broke along the way.</p>
+        <p>At Alamar Biosciences, I work on the NULISA Analysis Software (NAS) - a large-scale, customer-facing SaaS application for analyzing proteomics data, built with R Shiny and running on Azure Kubernetes Service (AKS).</p>
+        <p><strong>Key Results:</strong></p>
+        <ul>
+          <li>Image sizes reduced by 42% (1.5GB → 870MB compressed in ACR)</li>
+          <li>Warm builds (code changes): 60-68% faster (20-25 mins → 8-15 mins)</li>
+          <li>Cold builds (dependency changes): 40 mins (longer but comprehensive and cached)</li>
+        </ul>
+        <p><a href="https://sumedhsankhe.github.io/blog/posts/docker-optimization.html">Read the full article →</a></p>
+      ]]></description>
+    </item>
+
+  </channel>
+</rss>
