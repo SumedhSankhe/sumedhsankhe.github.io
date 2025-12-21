@@ -1698,6 +1698,10 @@ button:focus {
     margin-bottom: 3rem;
 }
 
+.blog-post-subtitle {
+    display: none;
+}
+
 .back-link {
     display: inline-flex;
     align-items: center;
@@ -1730,9 +1734,7 @@ button:focus {
 }
 
 .blog-post-tags {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
+    display: none !important;
 }
 
 .blog-post-content {
