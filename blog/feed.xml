@@ -81,8 +81,6 @@ CMD ["R", "-e", "shiny::runApp('/app', host='0.0.0.0', port=3838)"]</code></pre>
 
                 <p>Those build times killed productivity. You'd push a fix, then switch to something else while waiting. By the time the build finished, you'd forgotten what you were even working on. It was like waiting for a Wonder to be built while your opponents are rushing you with trebuchets.</p>
 
-                <p><strong>Why this matters for SaaS:</strong> With Posit Connect, you typically deploy once and iterate internally. With a customer-facing SaaS on Kubernetes, you're constantly shipping features, bug fixes, and updates. Fast build times directly impact how quickly you can respond to customer issues and ship improvements. A 25-minute build cycle for every code change means you can only deploy a handful of times per day. That's not acceptable for modern SaaS development.</p>
-
                 <h2 id="the-solution">The Solution: Multistage Docker Builds</h2>
 
                 <p>The fix involves three core strategies (think of it as your build order):</p>
@@ -95,9 +93,44 @@ CMD ["R", "-e", "shiny::runApp('/app', host='0.0.0.0', port=3838)"]</code></pre>
 
                 <p>Let me show you exactly how this works. If you're familiar with AoE2, this is basically advancing from Dark Age (single-stage mess) to Imperial Age (optimized multistage build).</p>
 
+                <h2 id="layer-caching">How Layer Caching Actually Works</h2>
+
+                <p>This took me a while to really understand, so let me break it down. Each <code>RUN</code>, <code>COPY</code>, or <code>ADD</code> instruction in a Dockerfile creates a new layer. Docker caches these layers and reuses them if:</p>
+
+                <ol>
+                    <li>The instruction hasn't changed</li>
+                    <li>All previous layers are unchanged</li>
+                    <li>For <code>COPY</code>, the file contents are identical</li>
+                </ol>
+
+                <p><strong>The wrong way (what I had originally):</strong></p>
+                <pre><code class="language-dockerfile">COPY . .                    # Any file change invalidates this
+RUN R -e "renv::restore()"  # So this has to run again. Every time.</code></pre>
+
+                <p><strong>The right way:</strong></p>
+                <pre><code class="language-dockerfile">COPY renv.lock .            # Only changes when you add/remove packages (COLD build)
+RUN R -e "renv::restore()"  # Gets cached and reused for code changes (enables WARM builds)
+COPY app.R .                # Changes all the time, but doesn't break cache above (WARM build)</code></pre>
+
+                <p>That simple reordering creates the warm/cold build distinction:</p>
+                <ul>
+                    <li><strong>Warm build</strong>: <code>app.R</code> changes, <code>renv.lock</code> unchanged → <code>renv::restore()</code> layer is cached, build takes 30s</li>
+                    <li><strong>Cold build</strong>: <code>renv.lock</code> changes → <code>renv::restore()</code> runs, takes 6-8 mins for the demo app (40 mins for NAS with 200+ packages)</li>
+                </ul>
+
+                <p>Put your stable stuff first, your frequently changing stuff last.</p>
+
                 <h2 id="implementation">Implementation: Building the Optimized Dockerfile</h2>
 
                 <p>I'm going to walk through the multistage Dockerfile step by step. In the demo repo, I have a simple two-stage version for the example app. But for NAS, we actually use a three-stage build that separates CRAN packages from our custom packages. This makes sense when you have custom packages that change more frequently than your CRAN dependencies. For simpler apps, two stages is plenty.</p>
+
+                <h3>Choosing the Right Base Image</h3>
+
+                <p>The first decision when writing a Dockerfile is selecting a base image. Use <code>rocker/r2u</code> for significantly faster package installation through binary packages. This is especially beneficial for large projects with many dependencies.</p>
+
+                <pre><code class="language-dockerfile">FROM rocker/r2u:24.04 AS builder</code></pre>
+
+                <p>If you need Shiny Server (we don't - we use Kubernetes and run Shiny directly), <code>rocker/shiny</code> is also available with Shiny Server pre-installed. However, for Kubernetes deployments, <code>rocker/r2u</code> provides faster builds with smaller images.</p>
 
                 <h3>Stage 1: The Builder</h3>
 
@@ -168,40 +201,21 @@ CMD ["R", "--vanilla", "-e", ".libPaths('/app/renv/library/linux-ubuntu-noble/R-
 
                 <p><strong>What's happening here:</strong> The runtime stage starts fresh and uses <code>COPY --from=builder</code> to grab the compiled packages. Notice we're installing <code>libcurl4</code> instead of <code>libcurl4-openssl-dev</code>. The <code>-dev</code> packages include headers and build tools. We don't need those to run the app, only to compile packages. This alone saves hundreds of megabytes.</p>
 
-                <p>Also notice the CMD uses <code>--vanilla</code> - that's the fix for the renv runtime issue I mentioned earlier.</p>
+                <h4>Fixing Broken Symlinks in Multistage Builds</h4>
 
-                <h2 id="things-broke">Things That Broke (And How I Fixed Them)</h2>
+                <p>When I first implemented this, the multistage build wouldn't work - Shiny couldn't find any packages. Turns out renv uses symlinks to a cache directory at <code>/root/.cache/R/renv/cache/</code>. When copying the renv library between stages, I was copying the symlinks but not the actual files they pointed to. Every package was just a broken link.</p>
 
-                <p>Okay, so I thought I was done after writing the multistage Dockerfile. Built the images, they looked great. Then I actually tried to run them and... the app wouldn't start. Here's what went wrong.</p>
+                <p><strong>The fix:</strong> Copy the renv cache along with the library. That's why in the code above, we copy <code>/app/renv</code> which includes the cache directory. Now the symlinks work and packages load properly.</p>
 
-                <h3>Issue 1: renv Trying to Reinstall Packages at Runtime</h3>
+                <p>Also notice the CMD uses <code>--vanilla</code> - that's the fix for another issue I ran into.</p>
 
-                <p>The containers would start, but then renv would activate (because of <code>.Rprofile</code>) and immediately complain that packages were missing or out of sync. It would try to reinstall everything at runtime. Turns out my <code>renv.lock</code> file was missing a bunch of transitive dependencies - things like <code>cpp11</code>, <code>crosstalk</code>, <code>farver</code>. These aren't packages I explicitly use, but they're dependencies of dependencies.</p>
+                <h4>Preventing renv from Reinstalling at Runtime</h4>
 
-                <p>When renv detected these weren't in the lockfile, it thought something was wrong and tried to "fix" it by reinstalling. In a running container. Which obviously failed.</p>
+                <p>The containers would start, but then renv would activate (because of <code>.Rprofile</code>) and immediately try to reinstall packages at runtime. My <code>renv.lock</code> file was missing transitive dependencies like <code>cpp11</code>, <code>crosstalk</code>, <code>farver</code> - dependencies of dependencies that renv thought were "missing."</p>
 
-                <p><strong>The fix:</strong> I disabled renv activation at runtime by using <code>R --vanilla</code> which skips the <code>.Rprofile</code>. Then I explicitly set the library path in the CMD:</p>
+                <p><strong>The fix:</strong> Disable renv activation at runtime by using <code>R --vanilla</code> (which skips <code>.Rprofile</code>) and explicitly set the library path in the CMD. That's why you see <code>--vanilla</code> and the explicit <code>.libPaths()</code> call in the CMD above. This way, R uses the pre-installed packages without triggering renv's automatic restoration.</p>
 
-                <pre><code class="language-dockerfile">CMD ["R", "--vanilla", "-e", ".libPaths('/app/renv/library/linux-ubuntu-noble/R-4.5/x86_64-pc-linux-gnu'); shiny::runApp('/app', host = '0.0.0.0', port = 3838)"]</code></pre>
-
-                <p>This way, R uses the pre-installed packages but doesn't trigger renv's "helpful" automatic restoration.</p>
-
-                <h3>Issue 2: Broken Symlinks in Multistage Builds</h3>
-
-                <p>Even after fixing the renv activation issue, the multistage builds still wouldn't work. Shiny couldn't find any packages. Turns out renv uses symlinks to a cache directory at <code>/root/.cache/R/renv/cache/</code>. When I copied the renv library between stages, I was copying the symlinks but not the actual files they pointed to. So every package was just a broken link.</p>
-
-                <p>I spent way too long debugging this before I realized what was happening.</p>
-
-                <p><strong>The fix:</strong> Copy the renv cache along with the library:</p>
-
-                <pre><code class="language-dockerfile"># Copy the renv cache (symlinks in renv/library point to this cache)
-COPY --from=builder /root/.cache/R/renv /root/.cache/R/renv</code></pre>
-
-                <p>Now the symlinks work and packages load properly.</p>
-
-                <h3>Lesson Learned</h3>
-
-                <p>Test your containers actually run, not just build. I wasted a couple hours assuming that if the build succeeded, everything was fine. Docker's multistage builds add complexity, especially with package managers that use caching strategies like renv. Don't be like me clicking "I'm ready!" before actually being ready - test your builds like you're scouting your opponent's base before committing to a strategy.</p>
+                <p><strong>Lesson learned:</strong> Test that your containers actually run, not just build. Docker's multistage builds add complexity, especially with package managers like renv that use caching strategies. I wasted hours assuming that if the build succeeded, everything was fine.</p>
 
                 <h2 id="results">Results: Quantified Performance Improvements</h2>
 
@@ -276,60 +290,34 @@ COPY --from=builder /root/.cache/R/renv /root/.cache/R/renv</code></pre>
                 </table>
 
                 <div class="blog-note">
-                    <p><strong>Note:</strong> Our production setup includes additional optimizations beyond the scope of this post: automated base image rebuilds triggered by renv.lock hash changes, cache-busting strategies for custom package updates, and GitHub Actions runner cleanup for multi-stage builds. These advanced CI/CD integrations will be covered in a follow-up post.</p>
-                </div>
+                    <h3>Understanding the Results</h3>
 
-                <div class="blog-note">
-                    <p><strong>Note on image sizes:</strong> The sizes shown are <strong>compressed sizes</strong> as stored in container registries (ACR/GHCR). These are the sizes that matter for:</p>
+                    <h4>Image Size Metrics</h4>
+                    <p>The sizes shown are <strong>compressed sizes</strong> as stored in container registries (ACR/GHCR). These are the sizes that matter for:</p>
                     <ul>
                         <li>Registry storage costs</li>
                         <li>Network transfer time during push/pull</li>
                         <li>Initial deployment speed to Kubernetes</li>
                     </ul>
                     <p>Container registries compress images to about 25-35% of their uncompressed size. So the 870MB compressed NAS image is ~2.2-2.6GB when uncompressed on disk. The demo app achieves a 25% reduction in registry size, while our production NAS app sees a 42% reduction (1.5GB → 870MB in ACR).</p>
-                </div>
 
-                <div class="blog-note">
-                    <p><strong>Note on warm vs cold builds:</strong> The key optimization is <strong>distinguishing between these two scenarios</strong>. Our original setup treated every build the same—changing one line of code triggered a full 20-25 minute rebuild with all packages reinstalled. The optimized approach separates:</p>
+                    <h4>Warm vs Cold Build Strategy</h4>
+                    <p>The key optimization is <strong>distinguishing between these two scenarios</strong>. Our original setup treated every build the same—changing one line of code triggered a full 20-25 minute rebuild with all packages reinstalled. The optimized approach separates:</p>
                     <ul>
                         <li><strong>Warm builds</strong> (90% of builds): Code changes only → 8-15 mins</li>
                         <li><strong>Cold builds</strong> (10% of builds): Dependency changes → 40 mins (longer, but comprehensive and cached)</li>
                     </ul>
                     <p>Yes, cold builds are now slower, but they happen rarely (when you add/update packages). The common case (shipping code) is 60-68% faster.</p>
+
+                    <h4>Additional Optimizations</h4>
+                    <p>Our production setup includes additional optimizations beyond the scope of this post: automated base image rebuilds triggered by renv.lock hash changes, cache-busting strategies for custom package updates, and GitHub Actions runner cleanup for multi-stage builds. These advanced CI/CD integrations will be covered in a follow-up post.</p>
                 </div>
 
                 <p>The full CI/CD pipeline includes additional steps beyond the Docker build: running unit tests, extracting test results, publishing them to GitHub, security scanning, etc. That's why the end-to-end time is longer than just the Docker build. The unit testing integration will be covered in a separate blog post.</p>
 
-                <h2 id="layer-caching">How Layer Caching Actually Works</h2>
-
-                <p>This took me a while to really understand, so let me break it down. Each <code>RUN</code>, <code>COPY</code>, or <code>ADD</code> instruction in a Dockerfile creates a new layer. Docker caches these layers and reuses them if:</p>
-
-                <ol>
-                    <li>The instruction hasn't changed</li>
-                    <li>All previous layers are unchanged</li>
-                    <li>For <code>COPY</code>, the file contents are identical</li>
-                </ol>
-
-                <p><strong>The wrong way (what I had originally):</strong></p>
-                <pre><code class="language-dockerfile">COPY . .                    # Any file change invalidates this
-RUN R -e "renv::restore()"  # So this has to run again. Every time.</code></pre>
-
-                <p><strong>The right way:</strong></p>
-                <pre><code class="language-dockerfile">COPY renv.lock .            # Only changes when you add/remove packages (COLD build)
-RUN R -e "renv::restore()"  # Gets cached and reused for code changes (enables WARM builds)
-COPY app.R .                # Changes all the time, but doesn't break cache above (WARM build)</code></pre>
-
-                <p>That simple reordering creates the warm/cold build distinction:</p>
-                <ul>
-                    <li><strong>Warm build</strong>: <code>app.R</code> changes, <code>renv.lock</code> unchanged → <code>renv::restore()</code> layer is cached, build takes 30s</li>
-                    <li><strong>Cold build</strong>: <code>renv.lock</code> changes → <code>renv::restore()</code> runs, takes 6-8 mins for the demo app (40 mins for NAS with 200+ packages)</li>
-                </ul>
-
-                <p>Put your stable stuff first, your frequently changing stuff last.</p>
-
                 <h2 id="production">How This Works in Production</h2>
 
-                <p>Here's how this fits into our actual Azure Kubernetes pipeline:</p>
+                <p>These optimizations aren't just theoretical—they're running in production right now for NAS. Here's how the multistage build integrates with our actual Azure Kubernetes pipeline:</p>
 
                 <pre><code class="language-yaml"># .github/workflows/deploy.yml (simplified)
 name: Build and Deploy to AKS
@@ -375,14 +363,6 @@ RUN --mount=type=secret,id=github_pat \
     R -e "renv::restore()"</code></pre>
 
                 <p>This keeps secrets out of your layers.</p>
-
-                <h3>2. Pick the Right Base Image</h3>
-
-                <p>Use <code>rocker/r2u</code> for significantly faster package installation through binary packages. This is especially beneficial for large projects with many dependencies.</p>
-
-                <pre><code class="language-dockerfile">FROM rocker/r2u:24.04 AS builder</code></pre>
-
-                <p>If you need Shiny Server (we don't - we use Kubernetes and run Shiny directly), <code>rocker/shiny</code> is also available with Shiny Server pre-installed. However, for Kubernetes deployments, <code>rocker/r2u</code> provides faster builds with smaller images.</p>
 
                 <h2 id="learned">What I Learned</h2>
 
