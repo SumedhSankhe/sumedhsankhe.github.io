@@ -1,6 +1,15 @@
 {
   "posts": [
     {
+      "id": "docker-optimization-part2",
+      "title": "Docker Optimization Part 2: Intelligent Caching for R Shiny Applications",
+      "date": "2025-12-24",
+      "readTime": "12 min read",
+      "excerpt": "Advanced Docker caching strategies: hash-based base images, cache busting for external packages, and tests as build gates. Learn how we reduced base image rebuilds by 85% and made tests a mandatory build gate.",
+      "tags": ["Docker", "R", "Shiny", "DevOps", "CI/CD", "GitHub Actions", "Testing"],
+      "file": "docker-optimization-part2.html"
+    },
+    {
       "id": "docker-optimization",
       "title": "Optimizing R Shiny Docker Builds: Warm vs Cold Build Strategy",
       "date": "2025-12-16",
