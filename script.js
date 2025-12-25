@@ -501,8 +501,9 @@ document.addEventListener('DOMContentLoaded', function() {
         card.className = 'blog-card';
         card.setAttribute('role', 'article');
 
-        // Format date
-        const date = new Date(post.date);
+        // Format date (parse as local date to avoid timezone issues)
+        const [year, month, day] = post.date.split('-');
+        const date = new Date(year, month - 1, day);
         const formattedDate = date.toLocaleDateString('en-US', {
             year: 'numeric',
             month: 'long',
