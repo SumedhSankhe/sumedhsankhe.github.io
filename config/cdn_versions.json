@@ -1,0 +1,9 @@
+{
+  "mermaid": "11.4.0",
+  "highlight": "11.8.0",
+  "notes": {
+    "mermaid": "Pinned to avoid Dependabot alerts. Update periodically to get new features and security patches.",
+    "highlight": "Highlight.js for syntax highlighting in code blocks. Update as needed.",
+    "lastUpdated": "2025-12-25"
+  }
+}
