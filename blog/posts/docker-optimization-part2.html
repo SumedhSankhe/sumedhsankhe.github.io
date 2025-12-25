@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Advanced Docker caching strategies: hash-based base images, cache busting for external packages, and tests as build gates">
+    <meta name="author" content="Sumedh R. Sankhe">
+    <meta name="keywords" content="Docker, R, Shiny, DevOps, CI/CD, GitHub Actions, Testing">
+    <title>Docker Optimization Part 2: Intelligent Caching for R Shiny Applications | Sumedh R. Sankhe</title>
+    <link rel="icon" type="image/svg+xml" href="../../favicon.svg">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" content="https://sumedhsankhe.github.io/blog/posts/docker-optimization-part2.html">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://sumedhsankhe.github.io/blog/posts/docker-optimization-part2.html">
+    <meta property="og:title" content="Docker Optimization Part 2: Intelligent Caching for R Shiny Applications">
+    <meta property="og:description" content="Advanced Docker caching strategies: hash-based base images, cache busting for external packages, and tests as build gates">
+    <meta property="og:image" content="https://sumedhsankhe.github.io/profile.png">
+    <meta property="article:published_time" content="2025-12-24">
+    <meta property="article:author" content="Sumedh R. Sankhe">
+    <meta property="article:tag" content="Docker">
+    <meta property="article:tag" content="R">
+    <meta property="article:tag" content="Shiny">
+    <meta property="article:tag" content="DevOps">
+    <meta property="article:tag" content="CI/CD">
+    <meta property="article:tag" content="GitHub Actions">
+    <meta property="article:tag" content="Testing">
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Docker Optimization Part 2: Intelligent Caching for R Shiny Applications">
+    <meta name="twitter:description" content="Advanced Docker caching strategies: hash-based base images, cache busting for external packages, and tests as build gates">
+
+    <!-- Additional SEO -->
+    <meta name="robots" content="index, follow">
+
+    <!-- Google tag (gtag.js) - Consent-based loading -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      if (localStorage.getItem('cookieConsent') === 'accepted') {
+        const script = document.createElement('script');
+        script.async = true;
+        script.src = 'https://www.googletagmanager.com/gtag/js?id=G-ZB17TTEQRQ';
+        document.head.appendChild(script);
+
+        gtag('js', new Date());
+        gtag('config', 'G-ZB17TTEQRQ', {
+          'anonymize_ip': true,
+          'allow_google_signals': false,
+          'allow_ad_personalization_signals': false,
+          'cookie_flags': 'SameSite=None;Secure'
+        });
+      }
+    </script>
+
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="../../styles.css">
+
+    <!-- Mermaid.js for diagrams -->
+    <script type="module">
+        import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11.4.0/dist/mermaid.esm.min.mjs';
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default'
+        });
+
+        // Re-initialize Mermaid when theme changes
+        const observer = new MutationObserver((mutations) => {
+            mutations.forEach((mutation) => {
+                if (mutation.attributeName === 'data-theme') {
+                    const newTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'default';
+                    mermaid.initialize({ theme: newTheme });
+                    location.reload(); // Reload to apply new theme to diagrams
+                }
+            });
+        });
+        observer.observe(document.documentElement, { attributes: true });
+    </script>
+
+    <!-- Inline theme script to prevent FOUC -->
+    <script>
+        (function() {
+            try {
+                const validThemes = ['light', 'dark'];
+                const savedTheme = localStorage.getItem('theme');
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                const theme = validThemes.includes(savedTheme) ? savedTheme : (systemPrefersDark ? 'dark' : 'light');
+                document.documentElement.setAttribute('data-theme', theme);
+
+                // Initialize colorblind mode to prevent FOUC
+                const savedColorblindMode = localStorage.getItem('colorblindMode');
+                if (savedColorblindMode === 'true') {
+                    document.documentElement.setAttribute('data-colorblind', 'true');
+                }
+            } catch (e) {
+                const systemPrefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+                document.documentElement.setAttribute('data-theme', systemPrefersDark ? 'dark' : 'light');
+            }
+        })();
+    </script>
+</head>
+<body>
+    <!-- Skip to main content for accessibility -->
+    <a href="#main-content" class="skip-to-main">Skip to main content</a>
+
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="nav-left">
+                <div class="logo">Sumedh R. Sankhe</div>
+                <div class="toggle-buttons">
+                    <button type="button" class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode" title="Toggle dark mode">
+                        <span id="themeIcon">◐</span>
+                    </button>
+                    <button type="button" class="colorblind-toggle" id="colorblindToggle" aria-label="Toggle colorblind-friendly mode" title="Colorblind-friendly colors">
+                        <span id="colorblindIcon">👁</span>
+                    </button>
+                </div>
+            </div>
+            <button type="button" class="menu-toggle" id="menuToggle" aria-label="Toggle menu" aria-expanded="false">
+                <span id="menuIcon">☰</span>
+            </button>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="../../index.html">Home</a></li>
+                <li><a href="../../about.html">About</a></li>
+                <li><a href="../../projects.html">Projects</a></li>
+                <li><a href="../../skills.html">Skills</a></li>
+                <li><a href="../../blog.html" class="active" aria-current="page">Blog</a></li>
+                <li><a href="../../contact.html">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content">
+        <!-- Article Header -->
+        <article class="blog-post">
+            <header class="blog-post-header">
+                <div class="blog-post-meta">
+                    <time datetime="2025-12-24">December 24, 2025</time>
+                    <span class="blog-post-separator">•</span>
+                    <span class="blog-post-read-time">12 min read</span>
+                </div>
+                <h1>Docker Optimization Part 2: Intelligent Caching for R Shiny Applications</h1>
+                <p class="blog-post-subtitle">Advanced Docker caching strategies: hash-based base images, cache busting for external packages, and tests as build gates</p>
+                <div class="blog-post-tags">
+                    <span class="blog-tag">Docker</span>
+                    <span class="blog-tag">R</span>
+                    <span class="blog-tag">Shiny</span>
+                    <span class="blog-tag">DevOps</span>
+                    <span class="blog-tag">CI/CD</span>
+                    <span class="blog-tag">GitHub Actions</span>
+                    <span class="blog-tag">Testing</span>
+                </div>
+            </header>
+
+            <!-- Article Content -->
+            <div class="blog-post-content">
+                <p class="blog-intro">In <a href="docker-optimization.html">Part 1</a>, we covered the basics of multistage builds and layer caching for R Shiny applications. The TL;DR: separate your slow-changing dependencies from fast-changing application code, and Docker's layer cache will reward you with faster builds. But that approach has a blind spot—a big one. This post explores advanced caching strategies that solve the "phantom dependency" problem and make your Docker builds even more intelligent.</p>
+
+                <h2 id="the-problem-nobody-talks-about">The Problem Nobody Talks About</h2>
+
+                <p>Picture this: your <code>renv.lock</code> hasn't changed in two weeks. Your Dockerfile is identical. You push a one-line bug fix. Docker sees nothing changed in the dependency layers, serves everything from cache, and your build finishes in 3 minutes. Beautiful.</p>
+
+                <p>Except... your teammate just pushed a critical fix to an internal R package hosted on GitHub. Your build used the cached version. The fix isn't in your image. You deploy. Production breaks.</p>
+
+                <p>This is the "phantom dependency" problem. Docker's layer cache is content-addressed—it only knows about files <em>in your repository</em>. It has no idea that <code>renv::install("org/package")</code> now points to different code than it did yesterday.</p>
+
+                <p>We needed to solve two distinct caching problems:</p>
+
+                <ol>
+                    <li><strong>Lock file changes</strong>: When <code>renv.lock</code> updates, rebuild the base image</li>
+                    <li><strong>External package changes</strong>: When upstream GitHub packages change (but lock file doesn't), invalidate just that layer</li>
+                </ol>
+
+                <p>And while we're at it, why not make tests a build gate? If tests fail, the image shouldn't exist.</p>
+
+                <h2 id="solution-1-hash-based-base-images">Solution 1: Hash-Based Base Images</h2>
+
+                <p>The insight is simple: treat your lock file as a cache key. Same lock file = same dependencies = reuse the image. Different hash = rebuild.</p>
+
+                <p>Here's the mechanism:</p>
+
+                <pre><code class="language-bash"># Compute a 12-character hash of your lock file
+LOCK_HASH=$(sha256sum renv.lock | cut -c1-12)
+
+# Tag your base image with the hash
+BASE_TAG="my-app-base:${VERSION}-${LOCK_HASH}"
+# Example: my-app-base:1.4-dev-a3b2c1d4e5f6</code></pre>
+
+                <p>Now your CI workflow becomes:</p>
+
+                <pre><code class="language-yaml">- name: Check if base image exists
+  run: |
+    LOCK_HASH=$(sha256sum renv.lock | cut -c1-12)
+    BASE_TAG="my-app-base:${BRANCH}-${LOCK_HASH}"
+
+    if docker pull "registry.example.com/${BASE_TAG}" 2>/dev/null; then
+      echo "Base image found - using cache"
+      echo "needs_build=false" >> $GITHUB_OUTPUT
+    else
+      echo "Base image not found - will build"
+      echo "needs_build=true" >> $GITHUB_OUTPUT
+    fi
+
+- name: Build base image (if needed)
+  if: steps.check.outputs.needs_build == 'true'
+  run: |
+    docker build -f Dockerfile.base \
+      --build-arg LOCK_HASH=${LOCK_HASH} \
+      -t registry.example.com/${BASE_TAG} .
+    docker push registry.example.com/${BASE_TAG}</code></pre>
+
+                <p>The base Dockerfile installs everything from your lock file:</p>
+
+                <pre><code class="language-dockerfile"># Dockerfile.base - Stable dependency layer
+FROM rocker/r2u:24.04
+
+COPY renv.lock /app/renv.lock
+COPY .Rprofile /app/.Rprofile
+COPY renv/activate.R /app/renv/activate.R
+
+WORKDIR /app
+
+# Restore all packages from lock file
+RUN R -e "renv::restore()"
+
+# Label with hash for traceability
+ARG LOCK_HASH
+LABEL renv.lock.hash="${LOCK_HASH}"</code></pre>
+
+                <p><strong>Why this works</strong>: The first PR that updates <code>renv.lock</code> pays the ~15 minute base image build cost. Every subsequent PR targeting that branch (with the same lock file) gets instant cache hits. When someone updates dependencies again, only then does the base image rebuild.</p>
+
+                <p>In practice, we saw base image rebuilds drop from "every PR" to "2-3 times per release cycle."</p>
+
+                <h2 id="solution-2-cache-busting-for-external-packages">Solution 2: Cache Busting for External Packages</h2>
+
+                <p>But what about packages not in your lock file? Maybe you have internal GitHub packages that follow branch conventions (e.g., <code>org/analytics-core@1.4-dev</code>). These update frequently, but your lock file doesn't track their commits.</p>
+
+                <p>Docker needs a signal that something changed. We give it one:</p>
+
+                <pre><code class="language-dockerfile"># Main Dockerfile
+ARG BASE_IMAGE
+ARG CACHE_BUST=0
+
+FROM ${BASE_IMAGE} AS builder
+
+# This layer rebuilds when CACHE_BUST changes
+RUN echo "Cache bust: ${CACHE_BUST}" && \
+    R -e "renv::install('org/analytics-core@${BRANCH}')"</code></pre>
+
+                <p>The <code>echo</code> statement is the key. Docker evaluates build args, sees that <code>CACHE_BUST</code> changed, and invalidates this layer and everything after it.</p>
+
+                <p>In your CI:</p>
+
+                <pre><code class="language-yaml">build-args: |
+  BASE_IMAGE=registry.example.com/${BASE_TAG}
+  CACHE_BUST=${{ github.run_id }}</code></pre>
+
+                <p>Using <code>github.run_id</code> means every build gets fresh external packages. But you can also make it smarter:</p>
+
+                <pre><code class="language-yaml"># Only bust cache when triggered by upstream repo webhook
+cache-bust: ${{ inputs.cache-bust || 'stable' }}</code></pre>
+
+                <p>This way, normal PRs use cached packages (fast), but when an upstream repo dispatches a workflow trigger, you pass a new cache-bust value and force a fresh install.</p>
+
+                <h2 id="solution-3-tests-as-build-gates">Solution 3: Tests as Build Gates</h2>
+
+                <p>Here's a pattern I wish I'd adopted earlier: make your Docker build fail if tests fail. Not "build the image, then run tests in a separate job." The image literally doesn't get created unless tests pass.</p>
+
+                <pre><code class="language-dockerfile"># Dockerfile - Multi-stage with test gate
+ARG BASE_IMAGE
+
+# Stage 1: Build and Test
+FROM ${BASE_IMAGE} AS builder
+
+COPY . /app/
+WORKDIR /app
+
+# Install branch-specific packages
+RUN R -e "renv::install('org/package@${BRANCH}')"
+
+# Run tests - build FAILS if tests fail
+# JUnit reporter writes XML for CI systems to parse
+RUN R -e "testthat::test_dir('tests/testthat', \
+    reporter = testthat::JunitReporter\$new(file = '/tmp/test-results.xml'), \
+    stop_on_failure = TRUE)"
+
+# Verify results were generated
+RUN test -f /tmp/test-results.xml || exit 1
+
+
+# Stage 2: Production Runtime
+FROM rocker/r2u:24.04 AS runtime
+
+WORKDIR /app
+
+# Copy ONLY production artifacts (no tests/)
+COPY --from=builder /app/renv/ /app/renv/
+COPY --from=builder /app/R/ /app/R/
+COPY --from=builder /app/global.R /app/
+COPY --from=builder /app/server.R /app/
+COPY --from=builder /app/ui.R /app/
+
+# Note: tests/ directory stays in builder stage - not copied to runtime</code></pre>
+
+                <p>The key insight: <code>stop_on_failure = TRUE</code> makes <code>testthat::test_dir()</code> return a non-zero exit code when tests fail, which causes the <code>RUN</code> instruction to fail, which stops the entire build. No tests passing = no image.</p>
+
+                <p><strong>Extracting test results</strong>: The tricky part is getting JUnit XML out of a failed build for CI reporting. You need to build just the builder stage, then copy the results out:</p>
+
+                <pre><code class="language-yaml">- name: Extract test results
+  if: always()  # Run even if build failed
+  run: |
+    # Build only the builder stage (continues even if tests failed)
+    docker build --target builder -t temp-builder . || true
+
+    # Create container and copy results out
+    docker create --name temp temp-builder
+    docker cp temp:/tmp/test-results.xml ./test-results.xml || true
+    docker rm temp
+
+- name: Upload test results
+  if: always()
+  uses: actions/upload-artifact@v4
+  with:
+    name: test-results
+    path: test-results.xml</code></pre>
+
+                <h2 id="putting-it-all-together">Putting It All Together</h2>
+
+                <p>Here's the flow:</p>
+
+                <div class="mermaid">
+flowchart TD
+    Start([PR Opened]) --> Hash[Compute renv.lock hash<br/>Check if base image exists]
+    Hash --> CacheCheck{Cache exists?}
+
+    CacheCheck -->|HIT| Skip[Skip base build<br/><i>0 sec</i>]
+    CacheCheck -->|MISS| Build[Build base image<br/><i>~15 min</i>]
+
+    Skip --> AppBuild[Build app image<br/>• Install GH packages<br/>• Run tests<br/>• Build runtime]
+    Build --> AppBuild
+
+    AppBuild --> TestCheck{Tests pass?}
+
+    TestCheck -->|PASS| Push[Push image<br/>to registry]
+    TestCheck -->|FAIL| Abort[Build aborts<br/>No image created]
+
+    Push --> End([Done])
+    Abort --> End
+
+    classDef successNode fill:#d4edda,stroke:#28a745,stroke-width:2px,color:#000
+    classDef failNode fill:#f8d7da,stroke:#dc3545,stroke-width:2px,color:#000
+    classDef cacheHit fill:#cfe2ff,stroke:#0d6efd,stroke-width:2px,color:#000
+    classDef cacheMiss fill:#fff3cd,stroke:#ffc107,stroke-width:2px,color:#000
+    classDef processNode fill:#e7f3ff,stroke:#0066cc,stroke-width:2px,color:#000
+
+    class Push successNode
+    class Abort failNode
+    class Skip cacheHit
+    class Build cacheMiss
+    class Hash,AppBuild processNode
+                </div>
+
+                <h2 id="results">Results</h2>
+
+                <table class="blog-table">
+                    <thead>
+                        <tr>
+                            <th>Scenario</th>
+                            <th>Before</th>
+                            <th>After</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>PR with no dependency changes</td>
+                            <td>18-22 min</td>
+                            <td>4-6 min</td>
+                        </tr>
+                        <tr>
+                            <td>PR with renv.lock changes</td>
+                            <td>18-22 min</td>
+                            <td>18-22 min (expected)</td>
+                        </tr>
+                        <tr>
+                            <td>Base image cache hit rate</td>
+                            <td>0%</td>
+                            <td>~85%</td>
+                        </tr>
+                        <tr>
+                            <td>Test failures caught pre-push</td>
+                            <td>0%</td>
+                            <td>100%</td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <p>The biggest win isn't even the time savings—it's confidence. When an image exists in the registry, you <em>know</em> it passed tests. No more "the tests ran in a separate job that we forgot to check."</p>
+
+                <h2 id="things-that-broke-along-the-way">Things That Broke Along the Way</h2>
+
+                <p><strong>1. Registry authentication timing</strong>: We tried checking if the base image exists <em>before</em> logging into the container registry. Obvious in hindsight.</p>
+
+                <p><strong>2. Disk space on runners</strong>: Building both base and app images in one job exhausted GitHub runner disk space. We added conditional cleanup—aggressive cleanup only when base image needs building.</p>
+
+                <p><strong>3. Test result extraction from failed builds</strong>: <code>docker build</code> exits non-zero when tests fail, so the container never gets created. The fix is <code>--target builder</code> to build just that stage, ignoring the runtime stage that depends on test success.</p>
+
+                <h2 id="whats-next">What's Next</h2>
+
+                <p>This setup handles unit tests, but integration tests—especially for Shiny apps with browser interactions—are a different beast. That's Part 3: running headless Chrome in Docker for <code>shinytest2</code> without wanting to throw your laptop out the window.</p>
+
+                <hr>
+
+                <p><em>This is Part 2 of a series on Docker optimization for R Shiny applications. <a href="docker-optimization.html">Part 1</a> covers multistage builds and layer caching fundamentals.</em></p>
+            </div>
+
+            <!-- Back to Blog -->
+            <div class="blog-post-footer">
+                <a href="../../blog.html" class="blog-back-link">← Back to Blog</a>
+            </div>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2025 Sumedh R. Sankhe. All rights reserved.</p>
+    </footer>
+
+    <!-- Cookie Consent Banner -->
+    <div id="cookieConsent" class="cookie-consent" role="dialog" aria-live="polite" aria-label="Cookie consent">
+        <div class="cookie-consent-content">
+            <div class="cookie-consent-text">
+                <p>
+                    I use cookies and analytics to improve your experience and understand how you use this site.
+                    By accepting, you consent to the use of Google Analytics with IP anonymization.
+                    <a href="../../privacy.html">Learn more</a>
+                </p>
+            </div>
+            <div class="cookie-consent-buttons">
+                <button id="cookieAccept" class="cookie-btn cookie-btn-accept" aria-label="Accept cookies">
+                    Accept
+                </button>
+                <button id="cookieDecline" class="cookie-btn cookie-btn-decline" aria-label="Decline cookies">
+                    Decline
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="../../script.js"></script>
+</body>
+</html>
